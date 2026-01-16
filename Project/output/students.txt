@@ -1,0 +1,4 @@
+700012345|Say Puthi|3|2025|Mathematics 2:2|Physics 1:2|Programming:2|Writing and Research Skills:2
+700020000|Whatever|3|2025|Mathematics 2:4|Physics 1:4|Programming:3|Writing and Research Skills:2
+700030000|kkk|3|2025|Mathematics 2:4|Physics 1:4|Programming:4|Writing and Research Skills:4
+700040000|OOO|3|2025|Physics 1:2|Programming:4
