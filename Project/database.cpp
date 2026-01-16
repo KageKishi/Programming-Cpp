@@ -17,20 +17,31 @@ int getValidatedInteger(const std::string &prompt);
 string getname(const string &prompt);
 void Loading();
 string getID();
-void ExitProgram(map<string,int> &classes ,const string name,const  string ID, const int year, const int semester);
+void ExitProgram(map<string, int> &classes, const string name, const string ID, const int year, const int semester);
 int getValidYear();
 int getValidSemester();
 
 // DATABASE FUNCTIONS
+// Save student data to CSV
 void saveStudentData(const string &name, const string &ID, int semester, int year,
                      const map<string, int> &classes)
 {
-    // First, remove existing entry for this student
+    // First, read existing data
     ifstream infile("students.csv");
     vector<string> lines;
+    bool hasHeader = false;
+
     if (infile.is_open())
     {
         string line;
+        if (getline(infile, line))
+        {
+            // Keep header
+            lines.push_back(line);
+            hasHeader = true;
+        }
+
+        // Read and keep all lines except the current student's old data
         while (getline(infile, line))
         {
             size_t commaPos = line.find(',');
@@ -43,83 +54,48 @@ void saveStudentData(const string &name, const string &ID, int semester, int yea
         infile.close();
     }
 
-    // Write back all lines except the old entry
+    // Write back all data
     ofstream outfile("students.csv");
-    if (outfile.is_open() && lines.empty())
+    if (outfile.is_open())
     {
-        outfile << "ID,Name,Semester,Year,Programming,Physics 1,Mathematics 2,Writing and Research Skills\n";
-    }
-    else if (outfile.is_open())
-    {
-        for (const auto &line : lines)
+        // Write header if it doesn't exist
+        if (!hasHeader)
         {
-            outfile << line << "\n";
+            outfile << "ID,Name,Semester,Year,Programming,Physics 1,Mathematics 2,Writing and Research Skills\n";
         }
-    }
-
-    // Add new/updated entry
-    outfile << ID << "," << name << "," << semester << "," << year;
-    outfile << "," << classes.at("Programming");
-    outfile << "," << classes.at("Physics 1");
-    outfile << "," << classes.at("Mathematics 2");
-    outfile << "," << classes.at("Writing and Research Skills");
-    outfile << "\n";
-    outfile.close();
-}
-
-void saveGroupSlots(const map<int, map<string, int>> &courseamt)
-{
-    ofstream file("group_slots.txt");
-    if (file.is_open())
-    {
-        for (const auto &group : courseamt)
+        else
         {
-            file << group.first;
-            for (const auto &course : group.second)
+            // Write existing header and data
+            for (const auto &line : lines)
             {
-                file << "|" << course.first << ":" << course.second;
-            }
-            file << "\n";
-        }
-        file.close();
-    }
-}
-
-void loadGroupSlots(map<int, map<string, int>> &courseamt)
-{
-    ifstream file("group_slots.txt");
-    if (file.is_open())
-    {
-        string line;
-        while (getline(file, line))
-        {
-            stringstream ss(line);
-            string token;
-            getline(ss, token, '|');
-            int groupNum = stoi(token);
-
-            while (getline(ss, token, '|'))
-            {
-                size_t colonPos = token.find(':');
-                string courseName = token.substr(0, colonPos);
-                int slots = stoi(token.substr(colonPos + 1));
-                courseamt[groupNum][courseName] = slots;
+                outfile << line << "\n";
             }
         }
-        file.close();
+
+        // Add new/updated entry
+        outfile << ID << "," << name << "," << semester << "," << year;
+        outfile << "," << classes.at("Programming");
+        outfile << "," << classes.at("Physics 1");
+        outfile << "," << classes.at("Mathematics 2");
+        outfile << "," << classes.at("Writing and Research Skills");
+        outfile << "\n";
+        outfile.close();
     }
 }
 
+// Check if student exists in CSV
 bool studentExists(const string &ID)
 {
-    ifstream file("students.txt");
+    ifstream file("students.csv");
     if (file.is_open())
     {
         string line;
+        getline(file, line); // Skip header
+
         while (getline(file, line))
         {
-            size_t pipePos = line.find('|');
-            string storedID = line.substr(0, pipePos);
+            size_t commaPos = line.find(',');
+            string storedID = line.substr(0, commaPos);
             if (storedID == ID)
             {
                 file.close();
@@ -131,38 +107,41 @@ bool studentExists(const string &ID)
     return false;
 }
 
+// Load student data from CSV
 bool loadStudentData(const string &ID, string &name, int &semester, int &year,
                      map<string, int> &classes)
 {
-    ifstream file("students.txt");
+    ifstream file("students.csv");
     if (file.is_open())
     {
         string line;
+        getline(file, line); // Skip header
+
         while (getline(file, line))
         {
             stringstream ss(line);
-            string storedID, storedName;
+            string storedID, storedName, semStr, yearStr;
+            string prog, phys, math, writ;
 
-            getline(ss, storedID, '|');
+            getline(ss, storedID, ',');
             if (storedID == ID)
             {
-                getline(ss, storedName, '|');
-                name = storedName;
+                getline(ss, storedName, ',');
+                getline(ss, semStr, ',');
+                getline(ss, yearStr, ',');
+                getline(ss, prog, ',');
+                getline(ss, phys, ',');
+                getline(ss, math, ',');
+                getline(ss, writ, ',');
 
-                string semStr, yearStr;
-                getline(ss, semStr, '|');
-                getline(ss, yearStr, '|');
+                name = storedName;
                 semester = stoi(semStr);
                 year = stoi(yearStr);
 
-                string classInfo;
-                while (getline(ss, classInfo, '|'))
-                {
-                    size_t colonPos = classInfo.find(':');
-                    string className = classInfo.substr(0, colonPos);
-                    int groupNum = stoi(classInfo.substr(colonPos + 1));
-                    classes[className] = groupNum;
-                }
+                classes["Programming"] = stoi(prog);
+                classes["Physics 1"] = stoi(phys);
+                classes["Mathematics 2"] = stoi(math);
+                classes["Writing and Research Skills"] = stoi(writ);
 
                 file.close();
                 return true;
@@ -173,34 +152,42 @@ bool loadStudentData(const string &ID, string &name, int &semester, int &year,
     return false;
 }
 
+// View all students from CSV
 void viewAllStudents()
 {
-    ifstream file("students.txt");
+    ifstream file("students.csv");
     if (file.is_open())
     {
         cout << "\n=== All Registered Students ===\n";
         string line;
+        getline(file, line); // Skip header
+
         while (getline(file, line))
         {
             stringstream ss(line);
-            string id, name, sem, yr;
+            string id, name, sem, yr, prog, phys, math, writ;
 
-            getline(ss, id, '|');
-            getline(ss, name, '|');
-            getline(ss, sem, '|');
-            getline(ss, yr, '|');
+            getline(ss, id, ',');
+            getline(ss, name, ',');
+            getline(ss, sem, ',');
+            getline(ss, yr, ',');
+            getline(ss, prog, ',');
+            getline(ss, phys, ',');
+            getline(ss, math, ',');
+            getline(ss, writ, ',');
 
             cout << "ID: " << id << " | Name: " << name
                  << " | Semester: " << sem << "F-" << yr << "\n";
 
-            string classInfo;
-            while (getline(ss, classInfo, '|'))
-            {
-                size_t colonPos = classInfo.find(':');
-                string className = classInfo.substr(0, colonPos);
-                string groupNum = classInfo.substr(colonPos + 1);
-                cout << "  - " << className << ": 1E" << groupNum << "\n";
-            }
+            if (prog != "0")
+                cout << "  - Programming: 1E" << prog << "\n";
+            if (phys != "0")
+                cout << "  - Physics 1: 1E" << phys << "\n";
+            if (math != "0")
+                cout << "  - Mathematics 2: 1E" << math << "\n";
+            if (writ != "0")
+                cout << "  - Writing and Research Skills: 1E" << writ << "\n";
+
             cout << "\n";
         }
         file.close();
@@ -551,7 +538,7 @@ int main()
         {
             cout << "You are attempting to Exit the program.\n\n";
             cout << "Are you sure you want to exit the program, " << name << "(ID " << ID << ") Y/N?\n\n";
-            ExitProgram(page.classes , name , ID, year, semester);
+            ExitProgram(page.classes, name, ID, year, semester);
             return 0;
         }
         break;
@@ -708,7 +695,7 @@ string getID()
     }
 }
 
-void ExitProgram(map<string,int> &classes ,const string name,const  string ID, const int year, const int semester)
+void ExitProgram(map<string, int> &classes, const string name, const string ID, const int year, const int semester)
 {
     char ans;
     while (true)
