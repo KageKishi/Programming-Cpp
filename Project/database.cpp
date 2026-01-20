@@ -1,6 +1,9 @@
-/*1. Your program will be able to limit each group (i.e. 1E1, 1E2 etc.) to a maximum size of 15 students
-for EACH unit. If the user attempts to chose a group which has already reached the maximum, your
-program will ask the user to choose another group.*/
+/*
+ * Group Registration System with CSV Database
+ * Stores: Student ID, Name, Semester, Year, Group Registrations
+ * File: students.csv
+ */
+
 #include <iostream>
 #include <map>
 #include <vector>
@@ -21,31 +24,30 @@ void ExitProgram(map<string, int> &classes, const string name, const string ID, 
 int getValidYear();
 int getValidSemester();
 
-// DATABASE FUNCTIONS
+// ============ CSV DATABASE FUNCTIONS ============
+
 // Save student data to CSV
-void saveStudentData(const string &name, const string &ID, int semester, int year,
-                     const map<string, int> &classes)
+void saveStudentToCSV(const string &ID, const string &name, int semester, int year,
+                      const map<string, int> &classes)
 {
-    // First, read existing data
+    // Read existing data
     ifstream infile("students.csv");
     vector<string> lines;
     bool hasHeader = false;
-
     if (infile.is_open())
     {
         string line;
         if (getline(infile, line))
         {
-            // Keep header
-            lines.push_back(line);
+            lines.push_back(line); // Keep header
             hasHeader = true;
         }
 
-        // Read and keep all lines except the current student's old data
+        // Keep all lines except current student
         while (getline(infile, line))
         {
-            size_t commaPos = line.find(',');
-            string storedID = line.substr(0, commaPos);
+            size_t pos = line.find(',');
+            string storedID = line.substr(0, pos);
             if (storedID != ID)
             {
                 lines.push_back(line);
@@ -54,49 +56,44 @@ void saveStudentData(const string &name, const string &ID, int semester, int yea
         infile.close();
     }
 
-    // Write back all data
+    // Write everything back
     ofstream outfile("students.csv");
     if (outfile.is_open())
     {
-        // Write header if it doesn't exist
         if (!hasHeader)
         {
-            outfile << "ID,Name,Semester,Year,Programming,Physics 1,Mathematics 2,Writing and Research Skills\n";
+            outfile << "ID,Name,Semester,Year,Programming,Physics1,Mathematics2,WritingResearch\n";
         }
         else
         {
-            // Write existing header and data
             for (const auto &line : lines)
             {
                 outfile << line << "\n";
             }
         }
 
-        // Add new/updated entry
-        outfile << ID << "," << name << "," << semester << "," << year;
-        outfile << "," << classes.at("Programming");
-        outfile << "," << classes.at("Physics 1");
-        outfile << "," << classes.at("Mathematics 2");
-        outfile << "," << classes.at("Writing and Research Skills");
-        outfile << "\n";
+        // Add current student
+        outfile << ID << "," << name << "," << semester << "," << year << ",";
+        outfile << classes.at("Programming") << ",";
+        outfile << classes.at("Physics 1") << ",";
+        outfile << classes.at("Mathematics 2") << ",";
+        outfile << classes.at("Writing and Research Skills") << "\n";
         outfile.close();
     }
 }
 
-// Check if student exists in CSV
-bool studentExists(const string &ID)
+// Check if student exists
+bool studentExistsInCSV(const string &ID)
 {
     ifstream file("students.csv");
     if (file.is_open())
     {
         string line;
         getline(file, line); // Skip header
-
         while (getline(file, line))
         {
-            size_t commaPos = line.find(',');
-            string storedID = line.substr(0, commaPos);
-            if (storedID == ID)
+            size_t pos = line.find(',');
+            if (line.substr(0, pos) == ID)
             {
                 file.close();
                 return true;
@@ -108,8 +105,8 @@ bool studentExists(const string &ID)
 }
 
 // Load student data from CSV
-bool loadStudentData(const string &ID, string &name, int &semester, int &year,
-                     map<string, int> &classes)
+bool loadStudentFromCSV(const string &ID, string &name, int &semester, int &year,
+                        map<string, int> &classes)
 {
     ifstream file("students.csv");
     if (file.is_open())
@@ -120,28 +117,68 @@ bool loadStudentData(const string &ID, string &name, int &semester, int &year,
         while (getline(file, line))
         {
             stringstream ss(line);
-            string storedID, storedName, semStr, yearStr;
-            string prog, phys, math, writ;
+            string id, n, sem, yr, prog, phys, math, writ;
 
-            getline(ss, storedID, ',');
-            if (storedID == ID)
+            getline(ss, id, ',');
+            if (id == ID)
             {
-                getline(ss, storedName, ',');
-                getline(ss, semStr, ',');
-                getline(ss, yearStr, ',');
+                getline(ss, n, ',');
+                getline(ss, sem, ',');
+                getline(ss, yr, ',');
                 getline(ss, prog, ',');
                 getline(ss, phys, ',');
                 getline(ss, math, ',');
                 getline(ss, writ, ',');
 
-                name = storedName;
-                semester = stoi(semStr);
-                year = stoi(yearStr);
-
-                classes["Programming"] = stoi(prog);
-                classes["Physics 1"] = stoi(phys);
-                classes["Mathematics 2"] = stoi(math);
-                classes["Writing and Research Skills"] = stoi(writ);
+                name = n;
+                try
+                {
+                    semester = stoi(sem);
+                }
+                catch (...)
+                {
+                    semester = 1;
+                }
+                try
+                {
+                    year = stoi(yr);
+                }
+                catch (...)
+                {
+                    year = 2024;
+                }
+                try
+                {
+                    classes["Programming"] = stoi(prog);
+                }
+                catch (...)
+                {
+                    classes["Programming"] = 0;
+                }
+                try
+                {
+                    classes["Physics 1"] = stoi(phys);
+                }
+                catch (...)
+                {
+                    classes["Physics 1"] = 0;
+                }
+                try
+                {
+                    classes["Mathematics 2"] = stoi(math);
+                }
+                catch (...)
+                {
+                    classes["Mathematics 2"] = 0;
+                }
+                try
+                {
+                    classes["Writing and Research Skills"] = stoi(writ);
+                }
+                catch (...)
+                {
+                    classes["Writing and Research Skills"] = 0;
+                }
 
                 file.close();
                 return true;
@@ -152,13 +189,72 @@ bool loadStudentData(const string &ID, string &name, int &semester, int &year,
     return false;
 }
 
-// View all students from CSV
-void viewAllStudents()
+// View all students
+void viewAllStudentsFromCSV()
 {
     ifstream file("students.csv");
     if (file.is_open())
     {
-        cout << "\n=== All Registered Students ===\n";
+        cout << "\n========== ALL REGISTERED STUDENTS ==========\n";
+        string line;
+        getline(file, line); // Skip header
+
+        int count = 0;
+        while (getline(file, line))
+        {
+            stringstream ss(line);
+            string id, name, sem, yr, prog, phys, math, writ;
+
+            getline(ss, id, ',');
+            getline(ss, name, ',');
+            getline(ss, sem, ',');
+            getline(ss, yr, ',');
+            getline(ss, prog, ',');
+            getline(ss, phys, ',');
+            getline(ss, math, ',');
+            getline(ss, writ, ',');
+
+            count++;
+            cout << "\n[" << count << "] ID: " << id << " | Name: " << name
+                 << " | Semester: " << sem << "F-" << yr << "\n";
+
+            if (prog != "0")
+                cout << "    - Programming: 1E" << prog << "\n";
+            if (phys != "0")
+                cout << "    - Physics 1: 1E" << phys << "\n";
+            if (math != "0")
+                cout << "    - Mathematics 2: 1E" << math << "\n";
+            if (writ != "0")
+                cout << "    - Writing and Research Skills: 1E" << writ << "\n";
+        }
+
+        cout << "\n"
+             << string(45, '=') << "\n";
+        cout << "Total Students: " << count << "\n";
+        file.close();
+    }
+    else
+    {
+        cout << "No student database found.\n";
+    }
+}
+
+// Recalculate group slots from CSV
+void recalculateGroupSlotsFromCSV(map<int, map<string, int>> &courseamt)
+{
+    // Reset to max
+    for (int g = 1; g <= 4; g++)
+    {
+        courseamt[g]["Programming"] = 15;
+        courseamt[g]["Physics 1"] = 15;
+        courseamt[g]["Mathematics 2"] = 15;
+        courseamt[g]["Writing and Research Skills"] = 15;
+    }
+
+    // Count registrations
+    ifstream file("students.csv");
+    if (file.is_open())
+    {
         string line;
         getline(file, line); // Skip header
 
@@ -176,27 +272,50 @@ void viewAllStudents()
             getline(ss, math, ',');
             getline(ss, writ, ',');
 
-            cout << "ID: " << id << " | Name: " << name
-                 << " | Semester: " << sem << "F-" << yr << "\n";
+            int pg = 0, phg = 0, mg = 0, wg = 0;
+            try
+            {
+                pg = stoi(prog);
+            }
+            catch (...)
+            {
+            }
+            try
+            {
+                phg = stoi(phys);
+            }
+            catch (...)
+            {
+            }
+            try
+            {
+                mg = stoi(math);
+            }
+            catch (...)
+            {
+            }
+            try
+            {
+                wg = stoi(writ);
+            }
+            catch (...)
+            {
+            }
 
-            if (prog != "0")
-                cout << "  - Programming: 1E" << prog << "\n";
-            if (phys != "0")
-                cout << "  - Physics 1: 1E" << phys << "\n";
-            if (math != "0")
-                cout << "  - Mathematics 2: 1E" << math << "\n";
-            if (writ != "0")
-                cout << "  - Writing and Research Skills: 1E" << writ << "\n";
-
-            cout << "\n";
+            if (pg > 0 && pg <= 4)
+                courseamt[pg]["Programming"]--;
+            if (phg > 0 && phg <= 4)
+                courseamt[phg]["Physics 1"]--;
+            if (mg > 0 && mg <= 4)
+                courseamt[mg]["Mathematics 2"]--;
+            if (wg > 0 && wg <= 4)
+                courseamt[wg]["Writing and Research Skills"]--;
         }
         file.close();
     }
-    else
-    {
-        cout << "No student records found.\n";
-    }
 }
+
+// ============ REGISTER CLASS ============
 
 class Register
 {
@@ -210,7 +329,7 @@ public:
 
 private:
     map<int, map<string, int>> courseamt = {
-        {1, {{"Programming", 0}, {"Physics 1", 15}, {"Mathematics 2", 15}, {"Writing and Research Skills", 15}}},
+        {1, {{"Programming", 15}, {"Physics 1", 15}, {"Mathematics 2", 15}, {"Writing and Research Skills", 15}}},
         {2, {{"Programming", 15}, {"Physics 1", 15}, {"Mathematics 2", 15}, {"Writing and Research Skills", 15}}},
         {3, {{"Programming", 15}, {"Physics 1", 15}, {"Mathematics 2", 15}, {"Writing and Research Skills", 15}}},
         {4, {{"Programming", 15}, {"Physics 1", 15}, {"Mathematics 2", 15}, {"Writing and Research Skills", 15}}}};
@@ -221,18 +340,16 @@ private:
 public:
     Register()
     {
-        loadGroupSlots(courseamt);
+        // Load slot availability from CSV
+        recalculateGroupSlotsFromCSV(courseamt);
     }
 
-    // Check if student has any registrations
     bool hasRegistrations()
     {
         for (const auto &cls : classes)
         {
             if (cls.second != 0)
-            {
                 return true;
-            }
         }
         return false;
     }
@@ -276,10 +393,10 @@ public:
                 return 0;
             }
             cout << "\nSelect a unit:\n";
-            cout << "1 - Programming" << " (" << courseamt[group]["Programming"] << " slots availble)\n";
-            cout << "2 - Physics 1" << " (" << courseamt[group]["Physics 1"] << " slots availble)\n";
-            cout << "3 - Mathematics 2" << " (" << courseamt[group]["Mathematics 2"] << " slots availble)\n";
-            cout << "4 - Writing and Research Skills" << " (" << courseamt[group]["Writing and Research Skills"] << " slots availble)\n";
+            cout << "1 - Programming (" << courseamt[group]["Programming"] << " slots available)\n";
+            cout << "2 - Physics 1 (" << courseamt[group]["Physics 1"] << " slots available)\n";
+            cout << "3 - Mathematics 2 (" << courseamt[group]["Mathematics 2"] << " slots available)\n";
+            cout << "4 - Writing and Research Skills (" << courseamt[group]["Writing and Research Skills"] << " slots available)\n";
             cout << "5 - Select ALL the units above (only if you have not chosen individual unit)\n";
             cout << "0 - Exit to Main Page\n";
             course = getValidatedInteger("Choice: ");
@@ -305,62 +422,72 @@ public:
                 selectedClass = "Writing and Research Skills";
                 break;
             case 5:
-                if (classes["Programming"] == 0 && classes["Mathematics 2"] == 0 && classes["Physics 1"] == 0 && classes["Writing and Research Skills"] == 0 && courseamt[group]["Programming"] != 0 && courseamt[group]["Mathematics 2"] != 0 && courseamt[group]["Physics 1"] != 0 && courseamt[group]["Writing and Research Skills"] != 0)
+            {
+                bool canRegAll = true;
+                vector<string> reasons;
+
+                for (const auto &cls : classes)
                 {
-                    for (const auto &cll : classes)
+                    if (cls.second != 0)
                     {
-                        if (courseamt[group][cll.first] != 0)
-                        {
-                            classes[cll.first] = group;
-                            courseamt[group][cll.first]--;
-                        }
+                        canRegAll = false;
+                        reasons.push_back("Already registered for " + cls.first + " in 1E" + to_string(cls.second));
+                    }
+                }
+
+                for (const auto &cls : classes)
+                {
+                    if (courseamt[group][cls.first] == 0)
+                    {
+                        canRegAll = false;
+                        reasons.push_back("No slots for " + cls.first + " in 1E" + to_string(group));
+                    }
+                }
+
+                if (canRegAll)
+                {
+                    for (auto &cll : classes)
+                    {
+                        classes[cll.first] = group;
+                        courseamt[group][cll.first]--;
                     }
                     registered = true;
-                    saveGroupSlots(courseamt);
+                    system("cls");
+                    cout << "Successfully registered ALL units in 1E" << group << "!\n";
+                    Loading();
                 }
                 else
                 {
                     system("cls");
-                    for (const auto &cls : classes)
-                    {
-                        if (cls.second != 0)
-                        {
-                            cout << "Sorry, you have previously registered into 1E"
-                                 << cls.second << " for " << cls.first << "!\n";
-                        }
-                        if (courseamt[group][cls.first] == 0)
-                        {
-                            cout << "Sorry, no available slot for group 1E" << group << " for " << cls.first << endl;
-                        }
-                    }
+                    cout << "Cannot register all units:\n";
+                    for (const auto &r : reasons)
+                        cout << "  - " << r << "\n";
                 }
                 break;
+            }
             default:
                 system("cls");
                 cout << "Invalid choice\n";
             }
+
             if (!selectedClass.empty())
             {
                 if (courseamt[group][selectedClass] == 0 && course >= 1 && course <= 4)
                 {
-                    cout << "Sorry, no available slots for group 1E" << group << " for " << selectedClass << endl;
+                    cout << "Sorry, no slots available for 1E" << group << " - " << selectedClass << "\n";
                 }
-                else if (classes[selectedClass] != 0)
+                else if (classes[selectedClass] != 0 && course >= 1 && course <= 4)
                 {
                     system("cls");
-                    cout << "Sorry, you have previously registered into 1E" << classes[selectedClass]
-                         << " for "
-                         << selectedClass << "\n";
+                    cout << "You already registered for " << selectedClass << " in 1E" << classes[selectedClass] << "\n";
                 }
                 else if (course >= 1 && course <= 4)
                 {
                     system("cls");
                     courseamt[group][selectedClass]--;
                     classes[selectedClass] = group;
-                    cout << "You have sucessfully registered into 1E" << group
-                         << " for " << selectedClass << "\n";
+                    cout << "You have successfully registered 1E" << group << " for " << selectedClass << "!\n";
                     registered = true;
-                    saveGroupSlots(courseamt);
                     Loading();
                     return 1;
                 }
@@ -373,63 +500,53 @@ public:
         if (registered || hasRegistrations())
         {
             system("cls");
-            cout << "Welcome to Grouping Record Module, " << name << "\n\n";
-            cout << "Here are your registered groupings:\n\n";
-            cout << "Trimester: " << semester << "F-" << year << endl;
-            cout << "Student Name: " << name << endl;
-            cout << "Student ID: " << ID << endl
-                 << endl;
-            cout << left;
-            cout << setw(30) << "Unit"
-                 << setw(8) << "Grouping"
-                 << endl;
-            cout << string(38, '=') << endl;
+            cout << "========== GROUPING RECORD ==========\n\n";
+            cout << "Student: " << name << "\n";
+            cout << "ID: " << ID << "\n";
+            cout << "Trimester: " << semester << "F-" << year << "\n\n";
+            cout << left << setw(35) << "Unit" << setw(10) << "Group" << "\n";
+            cout << string(45, '=') << "\n";
+
             for (const auto &cls : classes)
             {
                 if (cls.second != 0)
                 {
-                    cout << setw(30) << cls.first
-                         << setw(8) << ("1E" + to_string(cls.second))
-                         << endl;
+                    cout << setw(35) << cls.first << setw(10) << ("1E" + to_string(cls.second)) << "\n";
                 }
             }
-            cout << string(38, '=') << endl;
+            cout << string(45, '=') << "\n";
             cout << right;
+
             char choice;
-            ofstream file("Record.txt");
             while (true)
             {
-                cout << "Would you like to print your grouping record (Y/N)? ";
+                cout << "\nPrint record to file? (Y/N): ";
                 cin >> ws >> choice;
                 choice = toupper(choice);
+
                 if (choice == 'Y')
                 {
-                    file << "Printing your grouping record...\n";
-                    file << "Welcome to Grouping Record Module, " << name << "\n\n";
-                    file << "Here are your registered groupings:\n\n";
-                    file << "Trimester: " << semester << "F-" << year << endl;
-                    file << "Student Name: " << name << endl;
-                    file << "Student ID: " << ID << endl
-                         << endl;
-                    file << left;
-                    file << setw(30) << "Unit"
-                         << setw(8) << "Grouping"
-                         << endl;
-                    file << string(38, '=') << endl;
+                    ofstream file("Record.txt");
+                    file << "========== GROUPING RECORD ==========\n\n";
+                    file << "Student: " << name << "\n";
+                    file << "ID: " << ID << "\n";
+                    file << "Trimester: " << semester << "F-" << year << "\n\n";
+                    file << left << setw(35) << "Unit" << setw(10) << "Group" << "\n";
+                    file << string(45, '=') << "\n";
+
                     for (const auto &cls : classes)
                     {
                         if (cls.second != 0)
                         {
-                            file << setw(30) << cls.first
-                                 << setw(8) << ("1E" + to_string(cls.second))
-                                 << endl;
+                            file << setw(35) << cls.first << setw(10) << ("1E" + to_string(cls.second)) << "\n";
                         }
                     }
-                    file << string(38, '=') << endl;
+                    file << string(45, '=') << "\n";
                     file.close();
+
                     system("start Record.txt");
                     system("cls");
-                    saveStudentData(name, ID, semester, year, classes);
+                    saveStudentToCSV(ID, name, semester, year, classes);
                     canExit = true;
                     return 0;
                 }
@@ -444,25 +561,27 @@ public:
         else
         {
             system("cls");
-            cout << "You have not registered in menu 1 above yet\n";
+            cout << "You have not registered yet!\n";
             return 0;
         }
     }
 };
 
+// ============ MAIN ============
+
 int main()
 {
     int choice;
     Register page;
-    string name;
-    string ID;
+    string name, ID;
     int semester, year;
+
     ID = getID();
-    if (studentExists(ID))
+
+    if (studentExistsInCSV(ID))
     {
         system("cls");
-        cout << "Welcome back! We found your existing registration.\n";
-        cout << "Loading your data";
+        cout << "Welcome back! Loading your data";
         for (int i = 0; i < 3; i++)
         {
             cout << " . ";
@@ -470,23 +589,27 @@ int main()
         }
         system("cls");
 
-        // Load existing student data
-        if (loadStudentData(ID, name, semester, year, page.classes))
+        if (loadStudentFromCSV(ID, name, semester, year, page.classes))
         {
-            cout << "\n=== Your Existing Information ===\n";
+            cout << "========== YOUR INFO ==========\n";
             cout << "Name: " << name << "\n";
             cout << "ID: " << ID << "\n";
-            cout << "Semester: " << semester << "F-" << year << "\n";
-            cout << "\nYour registered courses:\n";
+            cout << "Semester: " << semester << "F-" << year << "\n\n";
 
+            bool hasCourses = false;
             for (const auto &cls : page.classes)
             {
                 if (cls.second != 0)
                 {
                     cout << "  - " << cls.first << ": 1E" << cls.second << "\n";
+                    hasCourses = true;
                 }
             }
-            cout << "\nPress any key to continue to main menu...";
+            if (!hasCourses)
+                cout << "  No courses registered yet.\n";
+
+            cout << "\nPress Enter to continue...";
+            cin.ignore();
             cin.get();
             system("cls");
         }
@@ -495,8 +618,8 @@ int main()
     {
         name = getname("Enter your name: ");
         system("cls");
-        cout << "\nWelcome to our Grouping Registration App, " << name << " (ID: " << ID << ")!\n";
-        cout << "Loading Main Page";
+        cout << "\nWelcome, " << name << " (ID: " << ID << ")!\n";
+        cout << "Loading";
         for (int i = 0; i < 3; i++)
         {
             cout << " . ";
@@ -505,14 +628,18 @@ int main()
         system("cls");
         semester = getValidSemester();
         year = getValidYear();
-        cout << "\nThank you for your input. You are registering for Trimester " << semester << "F-" << year << "!\n\n";
+        cout << "\nRegistering for Trimester " << semester << "F-" << year << "!\n";
     }
-
     LoadingMain();
-
     while (true)
     {
-        choice = getValidatedInteger("\nGroup Registration Main Page\n1 - Register for grouping\n2 - View/Print grouping record\n0 - Exit program\n\nYour choice: ");
+        cout << "\n========== MAIN MENU ==========\n";
+        cout << "1 - Register for grouping\n";
+        cout << "2 - View/Print record\n";
+        cout << "3 - View all students\n";
+        cout << "0 - Exit\n";
+        choice = getValidatedInteger("\nChoice: ");
+
         switch (choice)
         {
         case 1:
@@ -524,31 +651,27 @@ int main()
             }
             break;
         case 2:
-        {
-            while (true)
-            {
-                if (page.GroupRecordModule(name, semester, year, ID) == 0)
-                {
-                    break;
-                }
-            }
+            while (page.GroupRecordModule(name, semester, year, ID) != 0)
+                ;
             break;
-        }
+        case 3:
+            system("cls");
+            viewAllStudentsFromCSV();
+            cout << "\nPress Enter to continue...";
+            cin.ignore();
+            cin.get();
+            system("cls");
+            LoadingMain();
+            break;
         case 0:
-        {
-            cout << "You are attempting to Exit the program.\n\n";
-            cout << "Are you sure you want to exit the program, " << name << "(ID " << ID << ") Y/N?\n\n";
+            cout << "\nExit program? (Y/N): ";
             ExitProgram(page.classes, name, ID, year, semester);
             return 0;
-        }
-        break;
         default:
-        {
             system("cls");
-            cout << "Sorry, please select option 0 to 2 only!\n";
-            break;
+            cout << "Invalid choice!\n";
         }
-        }
+
         if (page.canExit)
         {
             printDeveloperInfo();
@@ -557,6 +680,8 @@ int main()
     }
     return 0;
 }
+
+// ============ UTILITY FUNCTIONS ============
 
 int getValidatedInteger(const std::string &prompt)
 {
@@ -570,17 +695,13 @@ int getValidatedInteger(const std::string &prompt)
             for (char c : temp)
             {
                 if (!isdigit(c))
-                {
-                    throw std::invalid_argument("Invalid character");
-                }
+                    throw std::invalid_argument("Invalid");
             }
-            int value = std::stoi(temp);
-            return value;
+            return std::stoi(temp);
         }
         catch (...)
         {
-            std::cout << "Error: Please enter a valid choice.\n";
-            system("cls");
+            std::cout << "Error: Enter valid number.\n";
         }
     }
 }
@@ -588,16 +709,14 @@ int getValidatedInteger(const std::string &prompt)
 string getname(const string &prompt)
 {
     string temp;
-
     while (true)
     {
-        bool ValidName = true;
+        bool valid = true;
         cout << prompt;
         getline(cin, temp);
         if (temp.empty())
         {
-            system("cls");
-            cout << "ERROR: Your name value cannot be blank/empty!\n";
+            cout << "ERROR: Name cannot be empty!\n";
             continue;
         }
         for (char c : temp)
@@ -605,18 +724,18 @@ string getname(const string &prompt)
             if (isdigit(c))
             {
                 cout << "ERROR: Name cannot contain numbers!\n";
-                ValidName = false;
+                valid = false;
                 break;
             }
         }
-        if (ValidName)
+        if (valid)
             return temp;
     }
 }
 
 void Loading()
 {
-    cout << "Loading Group Registration Module";
+    cout << "Loading";
     for (int i = 0; i < 3; i++)
     {
         cout << " . ";
@@ -627,7 +746,7 @@ void Loading()
 
 void LoadingMain()
 {
-    cout << "Loading Group Registration Main Page";
+    cout << "Loading Main Menu";
     for (int i = 0; i < 3; i++)
     {
         cout << " . ";
@@ -638,33 +757,41 @@ void LoadingMain()
 
 void printDeveloperInfo()
 {
-    cout << "\n";
-    cout << string(114, '=') << endl;
-    cout << " |￣￣￣\\ |￣￣￣|  \\          // |￣￣￣|  |         /￣￣￣\\     |￣￣￣| |￣￣￣    /￣￣￣| \n";
-    cout << " |      | |           \\       //  |         |        |        |    |      | |         |      |  \n";
-    cout << " |      | |￣￣￣|      \\    //   |￣￣￣|   |        |        |    |-----|  |￣￣￣   |-----/   \n";
-    cout << " |      | |             \\  //     |         |        |        |    |        |         |   \\    \n";
-    cout << " |_____/  |______|       \\//      |______|  |_____|   \\_____/     |        |_______  |    \\   \n";
-    cout << "\n";
-    cout << "  _____   |\\   |  |￣￣￣|   /￣￣￣\\ n";
-    cout << "    |     | \\  |  |         |       |    \n";
-    cout << "    |     |  \\ |  |￣￣￣|  |        |     \n";
-    cout << "    |     |   \\|  |         |       |   \n";
-    cout << "  __|__   |     |  |         \\_____/    \n";
-    cout << string(114, '=') << endl
-         << endl;
+    system("chcp 65001 > nul");
+
+    system("cls");
+    cout << "\n\n";
+    cout << R"(
++==================================================================================================+
+|                                                                                                  |
+|    ######### #########  ##     ## #########  ##        #######  ######   #########  ######      |
+|    ##     ## ##          ##   ##  ##         ##       ##     ## ##   ##  ##         ##   ##     |
+|    ##     ## #######     ##   ##  #######    ##       ##     ## ######   #######    ######      |
+|    ##     ## ##           ## ##   ##         ##       ##     ## ##       ##         ##   ##     |
+|    ######### #########     ###    #########  ########  #######  ##       #########  ##    ##    |
+|                                                                                                  |
+|                        ####  ##   ## #########  #######                                          |
+|                         ##   ###  ## ##        ##     ##                                         |
+|                         ##   ## # ## #######   ##     ##                                         |
+|                         ##   ##  ### ##        ##     ##                                         |
+|                        ####  ##   ## ##         #######                                          |
+|                                                                                                  |
++==================================================================================================+
+)" << "\n";
+    system("chcp 437 > nul");
     cout << "Group 1E1-A:\n";
     cout << "1. Roy Roy (7000423210)\n";
     cout << "2. Pu3 Pu3 (7000424242)\n";
     cout << "3. Don Don (7000411441)\n";
     cout << "4. Hii Hii (7000410001)\n\n";
-    cout << "Team Member Task/Job Description\n";
-    cout << "-------------------------------------------------------------\n";
-    cout << "Roy Roy : Design flowchart and Main Page\n";
-    cout << "Pu3 Pu3 : Design and Develop Grouping Selection Module\n";
-    cout << "Don Don : Integration of Main Page and other Modules\n";
-    cout << "Hii Hii : Debugging of Errors in all parts and program exit\n\n";
-    cout << "Thank you for using our program.\n";
+    cout << "Task Distribution:\n";
+    cout << string(70, '-') << "\n";
+    cout << "Roy Roy : Flowchart & Main Page\n";
+    cout << "Pu3 Pu3 : Group Selection Module\n";
+    cout << "Don Don : Integration\n";
+    cout << "Hii Hii : Debugging & Exit\n\n";
+    cout << "Thank you for using our program!\n";
+    cout << string(70, '=') << "\n";
 }
 
 string getID()
@@ -673,25 +800,18 @@ string getID()
     while (true)
     {
         ID = to_string(getValidatedInteger("\nEnter your ID: "));
-        if (ID.empty())
+        if (ID.length() != 9)
         {
-            cout << "ERROR: Your ID value cannot be blank/empty!\n";
-            continue;
-        }
-        else if (ID.length() != 9)
-        {
-            cout << "ERROR: Your ID value must be 9-digit long!\n";
+            cout << "ERROR: ID must be 9 digits!\n";
             continue;
         }
         else if (ID.substr(0, 4) != "7000")
         {
-            cout << "ERROR: Your ID value must be in 7000XXXXX format!\n";
+            cout << "ERROR: ID must start with 7000!\n";
             continue;
         }
         else
-        {
             return ID;
-        }
     }
 }
 
@@ -700,25 +820,18 @@ void ExitProgram(map<string, int> &classes, const string name, const string ID, 
     char ans;
     while (true)
     {
-        if (ans == 'N')
-        {
-            break;
-        }
         cout << "Your choice: ";
         cin >> ans;
         ans = toupper(ans);
-        switch (ans)
+        if (ans == 'Y')
         {
-        case 'Y':
-        {
+            saveStudentToCSV(ID, name, semester, year, classes);
             printDeveloperInfo();
-            ans = 'N';
-            saveStudentData(name, ID, semester, year, classes);
             break;
         }
-        case 'N':
+        else if (ans == 'N')
         {
-            cout << "Returning to Main Page";
+            cout << "Returning to Main Menu";
             for (int i = 0; i < 3; i++)
             {
                 Sleep(500);
@@ -727,11 +840,9 @@ void ExitProgram(map<string, int> &classes, const string name, const string ID, 
             system("cls");
             break;
         }
-        default:
+        else
         {
-            cout << "Invalid Choice\n";
-            break;
-        }
+            cout << "Invalid! Enter Y or N: ";
         }
     }
 }
@@ -740,14 +851,10 @@ int getValidSemester()
 {
     while (true)
     {
-        int semester = getValidatedInteger("Enter Semester (e.g., 1,2 or 3): ");
-        if (semester > 3 || semester < 0)
-        {
-            cout << "That Semester doesnt exist\n";
-            continue;
-        }
-        else
-            return semester;
+        int sem = getValidatedInteger("Enter Semester (1, 2, or 3): ");
+        if (sem >= 1 && sem <= 3)
+            return sem;
+        cout << "Invalid semester!\n";
     }
 }
 
@@ -755,13 +862,9 @@ int getValidYear()
 {
     while (true)
     {
-        int year = getValidatedInteger("\nEnter Year (e.g. 2024): ");
-        if (year > 2100 || year < 1900)
-        {
-            cout << "This year is invalid\n";
-            continue;
-        }
-        else
-            return year;
+        int yr = getValidatedInteger("\nEnter Year (e.g. 2024): ");
+        if (yr >= 1900 && yr <= 2100)
+            return yr;
+        cout << "Invalid year!\n";
     }
 }
