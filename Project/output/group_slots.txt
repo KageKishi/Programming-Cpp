@@ -1,4 +1,0 @@
-1|Mathematics 2:15|Physics 1:15|Programming:0|Writing and Research Skills:15
-2|Mathematics 2:14|Physics 1:13|Programming:14|Writing and Research Skills:13
-3|Mathematics 2:15|Physics 1:15|Programming:14|Writing and Research Skills:15
-4|Mathematics 2:13|Physics 1:13|Programming:13|Writing and Research Skills:14
