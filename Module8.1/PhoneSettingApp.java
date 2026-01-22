@@ -1,8 +1,11 @@
 
 /*7.Implement an application in Java to display and navigate Menu about “Phone Setting”  */
 import java.util.Scanner;
+
 class PhoneSettingApp {
+
     static Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) {
         char choice;
         PhoneSettingApp app = new PhoneSettingApp();
@@ -10,22 +13,22 @@ class PhoneSettingApp {
             app.Menu();
             System.out.println("Enter Your choice: ");
             choice = sc.nextLine().charAt(0);
-            switch(choice) {   
+            switch (choice) {
                 case '1' -> {
                     boolean inGeneral = true;
                     while (inGeneral) {
                         app.General();
                         System.out.print("Enter your choice: ");
                         char gen = sc.nextLine().charAt(0);
-                        switch(gen) {
-                            case '1' -> { 
+                        switch (gen) {
+                            case '1' -> {
                                 boolean inAbout = true;
                                 while (inAbout) {
                                     app.About();
                                     System.out.println("");
                                     char back = sc.nextLine().charAt(0);
                                     if (back == '0') {
-                                        inAbout = false; 
+                                        inAbout = false;
                                     }
                                 }
                             }
@@ -42,17 +45,19 @@ class PhoneSettingApp {
                             }
                             case '3' -> {
                                 boolean inStorage = true;
-                                while(inStorage){
-                                app.NoFeature();
-                                System.out.println("");
-                                char back = sc.nextLine().charAt(0);
-                                if(back == '0'){
-                                    inStorage = false;
-                                }
+                                while (inStorage) {
+                                    app.NoFeature();
+                                    System.out.println("");
+                                    char back = sc.nextLine().charAt(0);
+                                    if (back == '0') {
+                                        inStorage = false;
+                                    }
                                 }
                             }
-                            case '0' -> inGeneral = false;
-                            default -> System.out.println("Please enter a valid choice");
+                            case '0' ->
+                                inGeneral = false;
+                            default ->
+                                System.out.println("Please enter a valid choice");
                         }
                     }
                 }
@@ -60,18 +65,20 @@ class PhoneSettingApp {
                 case '2' -> {
                     boolean inWiFi = true;
                     app.WiFi();
-                    while(inWiFi){
+                    while (inWiFi) {
                         System.out.println("");
                         char wifi = sc.nextLine().charAt(0);
-                        switch(wifi){
+                        switch (wifi) {
                             case '1' -> {
                                 app.networks();
                                 app.Back();
                             }
-                            case '0' -> {inWiFi = false;
+                            case '0' -> {
+                                inWiFi = false;
                                 break;
                             }
-                            default -> System.out.println("Please enter a valid option!");
+                            default ->
+                                System.out.println("Please enter a valid option!");
                         }
                     }
                 }
@@ -79,7 +86,14 @@ class PhoneSettingApp {
                     app.NoFeature();
                     app.Back();
                 }
-                default -> System.out.println("Please choose a valid option: ");
+                case '0' -> {
+                    break;
+                }
+                default -> {
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+                    System.out.println("Please choose a valid option: ");
+                }
             }
         } while (choice != '0');
         if (choice == '0') {
@@ -97,6 +111,7 @@ class PhoneSettingApp {
         System.out.println("6. Notification     >");
         System.out.println("0. Quit");
     }
+
     public void General() {
         System.out.println("General: ");
         System.out.println("1. About            >");
@@ -104,6 +119,7 @@ class PhoneSettingApp {
         System.out.println("3. Storage          >");
         System.out.println("0. Back             >");
     }
+
     public void About() {
         System.out.println("General > About: ");
         System.out.println("Name           iPhone");
@@ -111,6 +127,7 @@ class PhoneSettingApp {
         System.out.println("Version        18.5");
         System.out.println("0.Back");
     }
+
     public void Softwareupdate() {
         System.out.println("General > Software Update: ");
         System.out.println("======================");
@@ -118,6 +135,7 @@ class PhoneSettingApp {
         System.out.println("======================");
         System.out.println("0.Back");
     }
+
     public void WiFi() {
         System.out.println("Wi-Fi: ");
         System.out.println("Status             On");
@@ -125,6 +143,7 @@ class PhoneSettingApp {
         System.out.println("1. Other networks  >");
         System.out.println("0.Back ");
     }
+
     public void networks() {
         System.out.println("Wi-Fi  > Other networks: ");
         System.out.println("Bayon Coffee             *****");
@@ -133,6 +152,7 @@ class PhoneSettingApp {
         System.out.println("Koi                      *");
         System.out.println("0.Back");
     }
+
     public void NoFeature() {
         System.out.println("Title: ");
         System.out.println("=============================");
@@ -140,6 +160,7 @@ class PhoneSettingApp {
         System.out.println("=============================");
         System.out.println("0. Back");
     }
+
     public void Back() {
         System.out.print("Press 0 to go back: ");
         while (sc.nextLine().charAt(0) != '0') {
