@@ -4,6 +4,7 @@ Use an Array to store answers from user’s input
 */
 #include <cctype>
 #include <iostream>
+#include <iomanip>
 using namespace std;
 bool validAnswer(string &ans) {
     for (size_t i = 0; i < ans.length(); i++) {
@@ -32,10 +33,10 @@ int main() {
         } while (!validAnswer(answers[i]));
     }
     cout << "========================\n";
-    cout << "| Questions |  Answers |\n";
+    cout << setw(10)<< "| Questions " << "|" << setw(10) <<"Answers" << setw(5) << "|" << endl;
     cout << "========================\n";
     for (int i = 0; i < 8; i++) {
-        cout << "| Q" << i + 1 << "        | " << answers[i] << "      |\n";
+        cout << setw(10) << "| Q" << i + 1 << "|" << setw(10)  << answers[i] << setw(5) << "|" << endl;
         cout << "------------------------\n";
     }
     return 0;

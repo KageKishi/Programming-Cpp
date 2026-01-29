@@ -3,9 +3,7 @@
 import java.util.Scanner;
 
 class PhoneSettingApp {
-
     static Scanner sc = new Scanner(System.in);
-
     public static void main(String[] args) {
         char choice;
         PhoneSettingApp app = new PhoneSettingApp();
@@ -90,8 +88,6 @@ class PhoneSettingApp {
                     break;
                 }
                 default -> {
-                    System.out.print("\033[H\033[2J");
-                    System.out.flush();
                     System.out.println("Please choose a valid option: ");
                 }
             }

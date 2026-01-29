@@ -22,7 +22,6 @@ public:
     void Addition() {
         result = num1 + num2;
         cout << "Answer: " << result << endl;
-        num1 = result;
     }
     void Subtraction() {
         result = num1 - num2;

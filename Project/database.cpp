@@ -107,7 +107,7 @@ bool studentExistsInCSV(const string &ID)
 }
 
 // Load student data from CSV
-bool loadStudentFromCSV(const string &ID, string &names , int &semester, int &year,
+bool loadStudentFromCSV(const string &ID, string &names, int &semester, int &year,
                         map<string, int> &classes)
 {
     ifstream file("students.csv");
@@ -571,24 +571,24 @@ int main()
 {
     int choice;
     Register page;
-    string name,names, ID;
+    string name, names, ID;
     int semester, year;
     int ans;
-    bool Registers = false;
-    bool Login = false;
+    bool Registers;
+    bool Login;
     while (true)
     {
+        Registers = false;
+        Login = false;
         ans = getValidatedInteger("1.Register\n2.Login\nYour Choice: ");
         ans = toupper(ans);
         if (ans == 1)
         {
             Registers = true;
-            break;
         }
         else if (ans == 2)
         {
             Login = true;
-            break;
         }
         else
         {
@@ -596,33 +596,51 @@ int main()
             cout << "\nInvalid Choice!\n";
             continue;
         }
-    }
-    if(Login){
-        ID = getID();
-    }
-    while(Registers)
-    {
-        name = getname("Enter your name: ");
-        ID = getID();
-        if(studentExistsInCSV(ID)){
-            cout << "This ID is already registered\n";
-            system("pause");
+        while (Login)
+        {
+            ID = getID();
+            if (studentExistsInCSV(ID))
+            {
+                break;
+            }
+            else
+            {
+                cout << "Id has not been registered yet\n";
+                break;
+            }
+        }
+        while (Registers)
+        {
+            name = getname("Enter your name: ");
+            ID = getID();
+            if (studentExistsInCSV(ID))
+            {
+                cout << "This ID is already registered\n";
+                system("pause");
+                break;
+            }
+            system("cls");
+            cout << "\nWelcome, " << name << " (ID: " << ID << ")!\n";
+            cout << "Loading";
+            for (int i = 0; i < 3; i++)
+            {
+                cout << " . ";
+                Sleep(500);
+            }
+            system("cls");
+            semester = getValidSemester();
+            year = getValidYear();
+            cout << "\nRegistering for Trimester " << semester << "F-" << year << "!\n";
             break;
         }
-        system("cls");
-        cout << "\nWelcome, " << name << " (ID: " << ID << ")!\n";
-        cout << "Loading";
-        for (int i = 0; i < 3; i++)
-        {
-            cout << " . ";
-            Sleep(500);
+        if(studentExistsInCSV(ID)){
+            break;
         }
-        system("cls");
-        semester = getValidSemester();
-        year = getValidYear();
-        cout << "\nRegistering for Trimester " << semester << "F-" << year << "!\n";
-        break;
+        if(Registers){
+            break;
+        }
     }
+
     if (studentExistsInCSV(ID))
     {
         system("cls");
@@ -633,7 +651,7 @@ int main()
             Sleep(500);
         }
         system("cls");
-        if (loadStudentFromCSV(ID, names , semester, year, page.classes))
+        if (loadStudentFromCSV(ID, names, semester, year, page.classes))
         {
             name = names;
             cout << "========== YOUR INFO ==========\n";
