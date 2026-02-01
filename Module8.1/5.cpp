@@ -34,7 +34,7 @@ int main()
         cin >> checker;
         for (char c : checker)
         {
-            if (isdigit(c))
+            if (isdigit(c) || checker[0] == '-')
             {
                 continue;
             }

@@ -6,6 +6,9 @@
 #include <fstream>
 #include <sstream>
 #include <windows.h>
+#include <chrono>
+#include <thread>
+
 using namespace std;
 
 // ============ FORWARD DECLARATIONS ============
@@ -63,21 +66,21 @@ int main()
     string name, names, ID;
     int semester, year;
     int ans;
-    bool Registers = false;
-    bool Login = false;
-    
+    bool Registers;
+    bool Login;
     while (true)
     {
+        Registers = false;
+        Login = false;
         ans = getValidatedInteger("1.Register\n2.Login\nYour Choice: ");
+        ans = toupper(ans);
         if (ans == 1)
         {
             Registers = true;
-            break;
         }
         else if (ans == 2)
         {
             Login = true;
-            break;
         }
         else
         {
@@ -85,38 +88,54 @@ int main()
             cout << "\nInvalid Choice!\n";
             continue;
         }
-    }
-    
-    if (Login)
-    {
-        ID = getID();
-    }
-    
-    while (Registers)
-    {
-        name = getname("Enter your name: ");
-        ID = getID();
-        if (studentExistsInCSV(ID))
+        while (Login)
         {
-            cout << "This ID is already registered\n";
-            system("pause");
+            ID = getID();
+            if (studentExistsInCSV(ID))
+            {
+                break;
+            }
+            else
+            {
+                cout << "Id has not been registered yet\n";
+                Login = false;
+                break;
+            }
+        }
+        while (Registers)
+        {
+            name = getname("Enter your name: ");
+            ID = getID();
+            if (studentExistsInCSV(ID))
+            {
+                cout << "This ID is already registered\n";
+                system("pause");
+                break;
+            }
+            system("cls");
+            cout << "\nWelcome, " << name << " (ID: " << ID << ")!\n";
+            cout << "Loading";
+            for (int i = 0; i < 3; i++)
+            {
+                cout << " . ";
+                Sleep(500);
+            }
+            system("cls");
+            semester = getValidSemester();
+            year = getValidYear();
+            cout << "\nRegistering for Trimester " << semester << "F-" << year << "!\n";
             break;
         }
-        system("cls");
-        cout << "\nWelcome, " << name << " (ID: " << ID << ")!\n";
-        cout << "Loading";
-        for (int i = 0; i < 3; i++)
+        if (studentExistsInCSV(ID))
         {
-            cout << " . ";
-            Sleep(500);
+            break;
         }
-        system("cls");
-        semester = getValidSemester();
-        year = getValidYear();
-        cout << "\nRegistering for Trimester " << semester << "F-" << year << "!\n";
-        break;
+        if (Registers)
+        {
+            break;
+        }
     }
-    
+
     if (studentExistsInCSV(ID))
     {
         system("cls");
@@ -152,9 +171,7 @@ int main()
             system("cls");
         }
     }
-    
     LoadingMain();
-    
     while (true)
     {
         cout << "\n========== Group Registration MAIN MENU ==========\n";
@@ -175,7 +192,8 @@ int main()
             }
             break;
         case 2:
-            while (page.GroupRecordModule(name, semester, year, ID) != 0);
+            while (page.GroupRecordModule(name, semester, year, ID) != 0)
+                ;
             break;
         case 3:
             system("cls");
@@ -215,7 +233,8 @@ bool Register::hasRegistrations()
 {
     for (const auto &cls : classes)
     {
-        if (cls.second != 0) return true;
+        if (cls.second != 0)
+            return true;
     }
     return false;
 }
@@ -275,10 +294,18 @@ int Register::CourseChoosing(int group)
         }
         switch (course)
         {
-        case 1: selectedClass = "Programming"; break;
-        case 2: selectedClass = "Physics 1"; break;
-        case 3: selectedClass = "Mathematics 2"; break;
-        case 4: selectedClass = "Writing and Research Skills"; break;
+        case 1:
+            selectedClass = "Programming";
+            break;
+        case 2:
+            selectedClass = "Physics 1";
+            break;
+        case 3:
+            selectedClass = "Mathematics 2";
+            break;
+        case 4:
+            selectedClass = "Writing and Research Skills";
+            break;
         case 5:
         {
             bool canRegAll = true;
@@ -318,7 +345,8 @@ int Register::CourseChoosing(int group)
             {
                 system("cls");
                 cout << "Cannot register all units:\n";
-                for (const auto &r : reasons) cout << "  - " << r << "\n";
+                for (const auto &r : reasons)
+                    cout << "  - " << r << "\n";
             }
             break;
         }
@@ -522,12 +550,13 @@ bool loadStudentFromCSV(const string &ID, string &names, int &semester, int &yea
                 getline(ss, phys, ',');
                 getline(ss, math, ',');
                 getline(ss, writ, ',');
-                try { semester = stoi(sem); } catch (...) { semester = 1; }
-                try { year = stoi(yr); } catch (...) { year = 2024; }
-                try { classes["Programming"] = stoi(prog); } catch (...) { classes["Programming"] = 0; }
-                try { classes["Physics 1"] = stoi(phys); } catch (...) { classes["Physics 1"] = 0; }
-                try { classes["Mathematics 2"] = stoi(math); } catch (...) { classes["Mathematics 2"] = 0; }
-                try { classes["Writing and Research Skills"] = stoi(writ); } catch (...) { classes["Writing and Research Skills"] = 0; }
+
+                semester = stoi(sem);
+                year = stoi(yr);
+                classes["Programming"] = stoi(prog);
+                classes["Physics 1"] = stoi(phys);
+                classes["Mathematics 2"] = stoi(math);
+                classes["Writing and Research Skills"] = stoi(writ);
                 file.close();
                 return true;
             }
@@ -565,13 +594,18 @@ void viewAllStudentsFromCSV()
             cout << "\n[" << count << "] ID: " << id << " | Name: " << name
                  << " | Semester: " << sem << "F-" << yr << "\n";
 
-            if (prog != "0") cout << "    - Programming: 1E" << prog << "\n";
-            if (phys != "0") cout << "    - Physics 1: 1E" << phys << "\n";
-            if (math != "0") cout << "    - Mathematics 2: 1E" << math << "\n";
-            if (writ != "0") cout << "    - Writing and Research Skills: 1E" << writ << "\n";
+            if (prog != "0")
+                cout << "    - Programming: 1E" << prog << "\n";
+            if (phys != "0")
+                cout << "    - Physics 1: 1E" << phys << "\n";
+            if (math != "0")
+                cout << "    - Mathematics 2: 1E" << math << "\n";
+            if (writ != "0")
+                cout << "    - Writing and Research Skills: 1E" << writ << "\n";
         }
 
-        cout << "\n" << string(45, '=') << "\n";
+        cout << "\n"
+             << string(45, '=') << "\n";
         cout << "Total Students: " << count << "\n";
         file.close();
     }
@@ -612,15 +646,19 @@ void recalculateGroupSlotsFromCSV(map<int, map<string, int>> &courseamt)
             getline(ss, writ, ',');
 
             int pg = 0, phg = 0, mg = 0, wg = 0;
-            try { pg = stoi(prog); } catch (...) { }
-            try { phg = stoi(phys); } catch (...) { }
-            try { mg = stoi(math); } catch (...) { }
-            try { wg = stoi(writ); } catch (...) { }
+            pg = stoi(prog);
+            phg = stoi(phys);
+            mg = stoi(math);
+            wg = stoi(writ);
 
-            if (pg > 0 && pg <= 4) courseamt[pg]["Programming"]--;
-            if (phg > 0 && phg <= 4) courseamt[phg]["Physics 1"]--;
-            if (mg > 0 && mg <= 4) courseamt[mg]["Mathematics 2"]--;
-            if (wg > 0 && wg <= 4) courseamt[wg]["Writing and Research Skills"]--;
+            if (pg > 0 && pg <= 4)
+                courseamt[pg]["Programming"]--;
+            if (phg > 0 && phg <= 4)
+                courseamt[phg]["Physics 1"]--;
+            if (mg > 0 && mg <= 4)
+                courseamt[mg]["Mathematics 2"]--;
+            if (wg > 0 && wg <= 4)
+                courseamt[wg]["Writing and Research Skills"]--;
         }
         file.close();
     }
@@ -673,7 +711,8 @@ string getname(const string &prompt)
                 break;
             }
         }
-        if (valid) return temp;
+        if (valid)
+            return temp;
     }
 }
 
@@ -699,42 +738,97 @@ void LoadingMain()
     system("cls");
 }
 
+// Set console color
+void setColor(int color)
+{
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
+
+// Get console width
+int getConsoleWidth()
+{
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    return csbi.srWindow.Right - csbi.srWindow.Left + 1;
+}
+
+// Print a string centered with a given color
+void printCenteredLine(const string &lines, int color)
+{
+    int width = getConsoleWidth();
+    int padding = max(0, (width - (int)lines.size()) / 2);
+    cout << string(padding, ' ');
+    setColor(color);
+    cout << lines << "\n";
+}
+
+// Main function
 void printDeveloperInfo()
 {
     system("chcp 65001 > nul");
-    system("cls");
-    cout << "\n\n";
-    cout << R"(
-+==================================================================================================+
-|                                                                                                  |
-|    ######### #########  ##     ## #########  ##        #######  ######   #########  ######       |
-|    ##     ## ##          ##   ##  ##         ##       ##     ## ##   ##  ##         ##   ##      |
-|    ##     ## #######     ##   ##  #######    ##       ##     ## ######   #######    ######       |
-|    ##     ## ##           ## ##   ##         ##       ##     ## ##       ##         ##   ##      |
-|    ######### #########     ###    #########  ########  #######  ##       #########  ##    ##     |
-|                                                                                                  |
-|                        ####  ##   ## #########  #######                                          |
-|                         ##   ###  ## ##        ##     ##                                         |
-|                         ##   ## # ## #######   ##     ##                                         |
-|                         ##   ##  ### ##        ##     ##                                         |
-|                        ####  ##   ## ##         #######                                          |
-|                                                                                                  |
-+==================================================================================================+
-)" << "\n";
+
+    vector<string> asciiArt = {
+        "+==================================================================================================+",
+        "|                                                                                                  |",
+        "|    ######### #########  ##     ## #########  ##        #######  ######   #########  ######       |",
+        "|    ##     ## ##          ##   ##  ##         ##       ##     ## ##   ##  ##         ##   ##      |",
+        "|    ##     ## #######     ##   ##  #######    ##       ##     ## ######   #######    ######       |",
+        "|    ##     ## ##           ## ##   ##         ##       ##     ## ##       ##         ##   ##      |",
+        "|    ######### #########     ###    #########  ########  #######  ##       #########  ##    ##     |",
+        "|                                                                                                  |",
+        "|                        ####  ##   ## #########  #######                                          |",
+        "|                         ##   ###  ## ##        ##     ##                                         |",
+        "|                         ##   ## # ## #######   ##     ##                                         |",
+        "|                         ##   ##  ### ##        ##     ##                                         |",
+        "|                        ####  ##   ## ##         #######                                          |",
+        "|                                                                                                  |",
+        "+==================================================================================================+"};
+
+    vector<string> memberInfo = {
+        "Group 4-B:",
+        "1. Lor Hengleap (p20250030)",
+        "2. Tim Romnea (p20250033)",
+        "3. Mony Viseth Setha (p20250017)",
+        "4. Huon Lina (p20250050)",
+        "",
+        "Task Distribution:",
+        string(70, '-'),
+        "Lor Hengleap : Source Code",
+        "Tim Romnea: FlowChart",
+        "Mony Viseth Setha : FlowChart",
+        "Huon Lina : FlowChart",
+        "",
+        "Thank you for using our program!",
+        string(70, '=')};
+
+    // Colors to cycle through (bright console colors)
+    vector<int> colors = {9, 11, 10, 14, 13, 12, 15};
+
+    int colorIndex = 0;
+
+    while (true)
+    {
+        system("cls");
+
+        // Print ASCII art
+        for (auto &lines : asciiArt)
+        {
+            printCenteredLine(lines, colors[colorIndex % colors.size()]);
+        }
+
+        cout << "\n";
+
+        // Print member info
+        for (auto &lines : memberInfo)
+        {
+            printCenteredLine(lines, colors[colorIndex % colors.size()]);
+        }
+
+        colorIndex++;                                      // move to next color
+        this_thread::sleep_for(chrono::milliseconds(500)); // slower color change
+    }
+
     system("chcp 437 > nul");
-    cout << "Group 1E1-A:\n";
-    cout << "1. Roy Roy (7000423210)\n";
-    cout << "2. Pu3 Pu3 (7000424242)\n";
-    cout << "3. Don Don (7000411441)\n";
-    cout << "4. Hii Hii (7000410001)\n\n";
-    cout << "Task Distribution:\n";
-    cout << string(70, '-') << "\n";
-    cout << "Roy Roy : Flowchart & Main Page\n";
-    cout << "Pu3 Pu3 : Group Selection Module\n";
-    cout << "Don Don : Integration\n";
-    cout << "Hii Hii : Debugging & Exit\n\n";
-    cout << "Thank you for using our program!\n";
-    cout << string(70, '=') << "\n";
 }
 
 string getID()
@@ -753,7 +847,8 @@ string getID()
             cout << "ERROR: ID must start with 7000!\n";
             continue;
         }
-        else return ID;
+        else
+            return ID;
     }
 }
 
@@ -794,7 +889,8 @@ int getValidSemester()
     while (true)
     {
         int sem = getValidatedInteger("Enter Semester (1, 2, or 3): ");
-        if (sem >= 1 && sem <= 3) return sem;
+        if (sem >= 1 && sem <= 3)
+            return sem;
         cout << "Invalid semester!\n";
     }
 }
@@ -804,7 +900,8 @@ int getValidYear()
     while (true)
     {
         int yr = getValidatedInteger("\nEnter Year (e.g. 2024): ");
-        if (yr >= 1900 && yr <= 2100) return yr;
+        if (yr >= 1900 && yr <= 2100)
+            return yr;
         cout << "Invalid year!\n";
     }
 }

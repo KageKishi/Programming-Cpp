@@ -1,0 +1,28 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "C/C++: gcc.exe build active file",
+            "command": "bash",
+            "args": [
+                "-c",
+                "/c/msys64/ucrt64/bin/g++.exe -std=c++17 claude.cpp -o claude.exe"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "PATH": "/c/msys64/ucrt64/bin:/c/msys64/usr/bin:${env:PATH}"
+                }
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Compile C++ with g++"
+        }
+    ],
+    "version": "2.0.0"
+}
