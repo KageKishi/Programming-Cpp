@@ -21,16 +21,8 @@ void resetColor()
     setColor(7); // Light gray (default)
 }
 // Color definitions
-#define COLOR_BLACK 0
-#define COLOR_DARK_BLUE 1
-#define COLOR_DARK_GREEN 2
-#define COLOR_DARK_CYAN 3
-#define COLOR_DARK_RED 4
-#define COLOR_DARK_MAGENTA 5
-#define COLOR_DARK_YELLOW 6
 #define COLOR_LIGHT_GRAY 7
 #define COLOR_DARK_GRAY 8
-#define COLOR_BLUE 9
 #define COLOR_GREEN 10
 #define COLOR_CYAN 11
 #define COLOR_RED 12
