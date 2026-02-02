@@ -304,7 +304,7 @@ int main()
             setColor(COLOR_YELLOW);
             cout << "\nPress Enter to continue... ";
             resetColor();
-            cin.ignore(); //prevents double error message
+            cin.ignore(); // prevents double error message
             cin.get();
             system("cls");
         }
@@ -380,11 +380,13 @@ int main()
             LoadingMain();
             break;
         case 0:
+        {
             setColor(COLOR_YELLOW);
             cout << "\nExit program? (Y/N): ";
             resetColor();
             ExitProgram(page.classes, name, ID, year, semester);
-            return 0;
+            break;
+        }
         default:
             system("cls");
             setColor(COLOR_RED);
