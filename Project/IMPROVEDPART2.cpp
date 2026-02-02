@@ -805,7 +805,9 @@ int Register::CourseChoosing(int group)
                 setColor(COLOR_CYAN);
                 cout << "1E" << group;
                 setColor(COLOR_RED);
-                cout << " - " << selectedClass << "\n";
+                cout << " - ";
+                setColor(COLOR_CYAN);
+                cout << selectedClass << "\n";
                 if (classes[selectedClass] != 0 && course >= 1 && course <= 4)
                 {
                     setColor(COLOR_RED);
@@ -1342,11 +1344,17 @@ string getname(const string &prompt)
     string temp;
     while (true)
     {
+        bool SpaceSeen = false;
         bool valid = true;
         setColor(COLOR_YELLOW);
         cout << prompt;
         setColor(COLOR_CYAN);
         getline(cin, temp);
+        if (isspace(temp[0]))
+        {
+            cout << "Your name cant start with space\n";
+            continue;
+        }
         resetColor();
         if (temp.empty())
         {
@@ -1357,13 +1365,17 @@ string getname(const string &prompt)
         }
         for (char c : temp)
         {
-            if (isdigit(c))
+            if (isdigit(c) || (!isalpha(c) && !isspace(c)) || (isspace(c) && SpaceSeen))
             {
                 setColor(COLOR_RED);
-                cout << "ERROR: Name cannot contain numbers!\n";
+                cout << "ERROR: Name can only be Alphabets and 1 space to seperate First and Last name!\n";
                 resetColor();
                 valid = false;
                 break;
+            }
+            if (isspace(c))
+            {
+                SpaceSeen = true;
             }
         }
         if (valid)
