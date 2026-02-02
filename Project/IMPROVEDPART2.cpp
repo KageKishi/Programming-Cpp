@@ -1516,7 +1516,7 @@ int getValidYear()
         setColor(COLOR_YELLOW);
         int yr = getValidatedInteger("\nEnter Year (e.g. 2024): ");
         resetColor();
-        if (yr >= 2030 && yr <= 2020)
+        if (yr <= 2030 && yr >= 2020)
             return yr;
         setColor(COLOR_RED);
         cout << "Invalid year!\n";
