@@ -37,7 +37,7 @@ int getValidatedInteger(const std::string &prompt);
 string getname(const string &prompt);
 void Loading();
 string getID();
-void ExitProgram(map<string, int> &classes, const string name, const string ID, const int year, const int semester);
+char ExitProgram(map<string, int> &classes, const string name, const string ID, const int year, const int semester);
 int getValidYear();
 int getValidSemester();
 void saveStudentToCSV(const string &ID, const string &name, int semester, int year, const map<string, int> &classes);
@@ -90,6 +90,7 @@ int main()
 
     while (true)
     {
+        system("cls");
         Registers = false;
         Login = false;
 
@@ -152,6 +153,7 @@ int main()
                 setColor(COLOR_RED);
                 cout << " ID has not been registered yet\n";
                 resetColor();
+                Sleep(1500);
                 Login = false;
                 break;
             }
@@ -206,7 +208,10 @@ int main()
             resetColor();
             break;
         }
-
+        if (studentExistsInCSV(ID) && Registers)
+        {
+            continue;
+        }
         if (studentExistsInCSV(ID))
         {
             break;
@@ -314,6 +319,7 @@ int main()
 
     while (true)
     {
+        system("cls");
         setColor(COLOR_CYAN);
         cout << "+============================================================+\n";
         cout << "|";
@@ -357,6 +363,7 @@ int main()
         switch (choice)
         {
         case 1:
+        {
             system("cls");
             while (choice != 0)
             {
@@ -364,27 +371,34 @@ int main()
                 choice = page.CourseChoosing(choice);
             }
             break;
+        }
         case 2:
             while (page.GroupRecordModule(name, semester, year, ID) != 0)
                 ;
             break;
         case 3:
+        {
             system("cls");
             viewAllStudentsFromCSV();
             setColor(COLOR_YELLOW);
             cout << "\nPress Enter to continue...";
             resetColor();
-            cin.ignore();
-            cin.get();
+            string trash;
+            getline(cin, trash);
             system("cls");
             LoadingMain();
             break;
+        }
         case 0:
         {
             setColor(COLOR_YELLOW);
             cout << "\nExit program? (Y/N): ";
             resetColor();
-            ExitProgram(page.classes, name, ID, year, semester);
+            char leave = ExitProgram(page.classes, name, ID, year, semester);
+            if (leave == 'Y')
+            {
+                return 0;
+            }
             break;
         }
         default:
@@ -723,6 +737,7 @@ int Register::CourseChoosing(int group)
             {
                 if (cls.second != 0)
                 {
+                    system("cls");
                     canRegAll = false;
                     reasons.push_back("Already registered for " + cls.first + " in 1E" + to_string(cls.second));
                 }
@@ -733,6 +748,7 @@ int Register::CourseChoosing(int group)
                 if (courseamt[group][cls.first] == 0)
                 {
                     canRegAll = false;
+                    system("cls");
                     reasons.push_back("No slots for " + cls.first + " in 1E" + to_string(group));
                 }
             }
@@ -784,13 +800,27 @@ int Register::CourseChoosing(int group)
             if (courseamt[group][selectedClass] == 0 && course >= 1 && course <= 4)
             {
                 setColor(COLOR_RED);
+                system("cls");
                 cout << "X Sorry, no slots available for ";
                 setColor(COLOR_CYAN);
                 cout << "1E" << group;
                 setColor(COLOR_RED);
                 cout << " - " << selectedClass << "\n";
+                if (classes[selectedClass] != 0 && course >= 1 && course <= 4)
+                {
+                    setColor(COLOR_RED);
+                    cout << "! You have also already registered for ";
+                    setColor(COLOR_CYAN);
+                    cout << selectedClass;
+                    setColor(COLOR_RED);
+                    cout << " in ";
+                    setColor(COLOR_CYAN);
+                    cout << "1E" << classes[selectedClass];
+                    resetColor();
+                    cout << "\n";
+                }
                 resetColor();
-                Sleep(2000);
+                Sleep(1500);
             }
             else if (classes[selectedClass] != 0 && course >= 1 && course <= 4)
             {
@@ -904,6 +934,8 @@ int Register::GroupRecordModule(const string &name, int semester, int year, stri
             cout << "\nPrint record to file? (Y/N): ";
             setColor(COLOR_CYAN);
             cin >> ws >> choice;
+            string trash;
+            getline(cin, trash);
             choice = toupper(choice);
 
             if (choice == 'Y')
@@ -1044,6 +1076,8 @@ bool studentExistsInCSV(const string &ID)
         getline(file, line);
         while (getline(file, line))
         {
+            if (line.empty())
+                continue; // Skip empty lines
             stringstream ss(line);
             string id;
             getline(ss, id, ',');
@@ -1068,6 +1102,8 @@ bool loadStudentFromCSV(const string &ID, string &names, int &semester, int &yea
         getline(file, line);
         while (getline(file, line))
         {
+            if (line.empty())
+                continue; // Skip empty lines
             stringstream ss(line);
             string id, n, sem, yr, prog, phys, math, writ;
             getline(ss, id, ',');
@@ -1082,12 +1118,20 @@ bool loadStudentFromCSV(const string &ID, string &names, int &semester, int &yea
                 getline(ss, math, ',');
                 getline(ss, writ, ',');
 
-                semester = stoi(sem);
-                year = stoi(yr);
-                classes["Programming"] = stoi(prog);
-                classes["Physics 1"] = stoi(phys);
-                classes["Mathematics 2"] = stoi(math);
-                classes["Writing and Research Skills"] = stoi(writ);
+                try
+                {
+                    semester = stoi(sem);
+                    year = stoi(yr);
+                    classes["Programming"] = stoi(prog);
+                    classes["Physics 1"] = stoi(phys);
+                    classes["Mathematics 2"] = stoi(math);
+                    classes["Writing and Research Skills"] = stoi(writ);
+                }
+                catch (...)
+                {
+                    file.close();
+                    return false;
+                }
                 file.close();
                 return true;
             }
@@ -1120,6 +1164,8 @@ void viewAllStudentsFromCSV()
         int count = 0;
         while (getline(file, line))
         {
+            if (line.empty())
+                continue; // Skip empty lines
             stringstream ss(line);
             string id, name, sem, yr, prog, phys, math, writ;
 
@@ -1221,6 +1267,8 @@ void recalculateGroupSlotsFromCSV(map<int, map<string, int>> &courseamt)
 
         while (getline(file, line))
         {
+            if (line.empty())
+                continue; // Skip empty lines
             stringstream ss(line);
             string id, name, sem, yr, prog, phys, math, writ;
 
@@ -1234,10 +1282,17 @@ void recalculateGroupSlotsFromCSV(map<int, map<string, int>> &courseamt)
             getline(ss, writ, ',');
 
             int pg = 0, phg = 0, mg = 0, wg = 0;
-            pg = stoi(prog);
-            phg = stoi(phys);
-            mg = stoi(math);
-            wg = stoi(writ);
+            try
+            {
+                pg = stoi(prog);
+                phg = stoi(phys);
+                mg = stoi(math);
+                wg = stoi(writ);
+            }
+            catch (...)
+            {
+                continue; // Skip invalid lines
+            }
 
             if (pg > 0 && pg <= 4)
                 courseamt[pg]["Programming"]--;
@@ -1259,6 +1314,7 @@ int getValidatedInteger(const std::string &prompt)
     std::string temp;
     while (true)
     {
+        setColor(COLOR_YELLOW);
         std::cout << prompt;
         setColor(COLOR_CYAN);
         std::getline(std::cin >> ws, temp);
@@ -1426,6 +1482,10 @@ void printDeveloperInfo()
 
         colorIndex++;                                      // move to next color
         this_thread::sleep_for(chrono::milliseconds(500)); // slower color change
+        if (colorIndex >= 10)
+        {
+            break;
+        }
     }
 
     system("chcp 437 > nul");
@@ -1458,7 +1518,7 @@ string getID()
     }
 }
 
-void ExitProgram(map<string, int> &classes, const string name, const string ID, const int year, const int semester)
+char ExitProgram(map<string, int> &classes, const string name, const string ID, const int year, const int semester)
 {
     char ans;
     while (true)
@@ -1472,6 +1532,7 @@ void ExitProgram(map<string, int> &classes, const string name, const string ID, 
         {
             saveStudentToCSV(ID, name, semester, year, classes);
             printDeveloperInfo();
+            return 'Y';
             break;
         }
         else if (ans == 'N')
@@ -1484,6 +1545,7 @@ void ExitProgram(map<string, int> &classes, const string name, const string ID, 
                 cout << " . ";
             }
             resetColor();
+            return 'N';
             system("cls");
             break;
         }
