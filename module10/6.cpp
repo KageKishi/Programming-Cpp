@@ -12,7 +12,7 @@ int main()
     cout << "Please enter the countdown starting value: ";
     cin >> x;
     cout << "Countdown begins..." << endl;
-    while (x >= 0)
+    while (x != 0)
     {
         cout << x << endl;
         Beep(500,500);

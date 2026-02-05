@@ -1494,7 +1494,7 @@ void printDeveloperInfo()
 
         colorIndex++;                                      // move to next color
         this_thread::sleep_for(chrono::milliseconds(500)); // slower color change
-        if (colorIndex >= 10)
+        if (colorIndex >= 50)
         {
             break;
         }

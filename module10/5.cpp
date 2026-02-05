@@ -35,6 +35,7 @@ int main()
             cout << "You have chosen to reload and not clear..." << endl;
             cout << "Why oh why my dear child?" << endl;
             system("pause");
+            system("cls");
             break;
         }
         case 'c':
@@ -42,14 +43,16 @@ int main()
         {
             cout << "You have chosen to part ways with me..." << endl;
             cout << "See you on the other side" << endl;
+            system("pause");
             system("cls");
-            exit(0);
+            check = 1;
             break;
         }
         default:
         {
             cout << "Invalid Choice!" << endl;
             cout << "Rerun the program and choose A, B or C only" << endl;
+            break;
         }
         }
     } while (check == 0);
