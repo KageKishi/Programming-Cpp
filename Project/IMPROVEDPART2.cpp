@@ -392,7 +392,7 @@ int main()
         case 0:
         {
             setColor(COLOR_YELLOW);
-            cout << "\nExit program? (Y/N): ";
+            cout << "\nAre you sure you want to exit the program, " << name << "ID(" << ID << ") Y/N?: \n";
             resetColor();
             char leave = ExitProgram(page.classes, name, ID, year, semester);
             if (leave == 'Y')
@@ -988,7 +988,7 @@ int Register::GroupRecordModule(const string &name, int semester, int year, stri
                 file.close();
                 system("start Record.txt");
                 saveStudentToCSV(ID, name, semester, year, classes);
-                canExit = true;
+                LoadingMain();
                 return 0;
             }
             else if (choice == 'N')

@@ -2,15 +2,15 @@
 |GROUPING RECORD                                             |
 +============================================================+
 |                                                            |
-|  Student: Lor Hengleap                                     |
-|  ID: 700012345                                             |
+|  Student: Song Vansak                                      |
+|  ID: 700030000                                             |
 |  Trimester: 3F-2025                                        |
 |                                                            |
 +============================================================+
 |  Unit                               Group                  |
 +============================================================+
 |  Mathematics 2                      1E2                    |
-|  Physics 1                          1E1                    |
-|  Programming                        1E4                    |
+|  Physics 1                          1E3                    |
+|  Programming                        1E2                    |
 |  Writing and Research Skills        1E3                    |
 +============================================================+

@@ -4,11 +4,10 @@ ID,Name,Semester,Year,Programming,Physics1,Mathematics2,WritingResearch
 700033333,Song Vansak,3,2025,2,2,2,2
 700091234,Las Vegas,3,2025,3,3,3,3
 700034834,thi,1,2025,0,2,0,0
-700012345,Lor Hengleap,2,2025,4,2,2,2
 700000222,Lor Hengleap,2,2025,4,1,2,2
 700000221,Lor Hengleap,1,2025,4,1,2,3
-700000223,Lor Hengleap,1,2025,4,1,2,3
-700000224,Lor Hengleap,3,2025,4,1,2,3
+700000223,Lor Hengleap,1,2025,4,1,3,3
+700000224,Lor Hengleap,3,2025,4,1,3,3
 700000225,Lor Hengleap,3,2025,4,1,2,3
 700000226,Lor Hengleap,3,2025,4,1,2,3
 700000227,Lor Hengleap,3,2025,4,1,2,3
@@ -18,4 +17,7 @@ ID,Name,Semester,Year,Programming,Physics1,Mathematics2,WritingResearch
 700000231,Lor Hengleap,3,2025,4,1,2,3
 700000232,Lor Hengleap,3,2025,4,1,2,3
 700000233,Lor Hengleap,3,2025,4,1,2,3
-700000234,Lor Hengleap,3,2025,4,1,2,3
+700000234,Lor Hengleap,3,2025,2,1,2,3
+700032113,Kage,1,2022,2,1,1,1
+700030000,Song Vansak,3,2025,2,3,2,3
+700012345,Lor Hengleap,2,2025,4,2,2,2
