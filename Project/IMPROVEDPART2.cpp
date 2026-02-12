@@ -392,7 +392,7 @@ int main()
         case 0:
         {
             setColor(COLOR_YELLOW);
-            cout << "\nAre you sure you want to exit the program, " << name << "ID(" << ID << ") Y/N?: \n";
+            cout << "\nAre you sure you want to exit the program, " << name << " ID(" << ID << ") Y/N?: \n";
             resetColor();
             char leave = ExitProgram(page.classes, name, ID, year, semester);
             if (leave == 'Y')
