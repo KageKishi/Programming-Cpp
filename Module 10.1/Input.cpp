@@ -5,8 +5,11 @@ Avg.cpp file). The values will be keyed inside Q08.cpp code and then shared acro
 Avg.cpp and Sum.cpp using extern data storage type. Sample output of the program is
 show below.*/
 // File Input.cpp
-//use this command to run ./output/Input.exe
+//use this command to run ./Input.exe
+
 #include <iostream>
+#include "Sum.cpp"
+#include "Avg.cpp"
 using namespace std;
 extern void Average();
 extern void Total();
