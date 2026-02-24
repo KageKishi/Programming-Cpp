@@ -309,7 +309,7 @@ int main()
             setColor(COLOR_YELLOW);
             cout << "\nPress Enter to continue... ";
             resetColor();
-            cin.ignore(); // prevents double error message
+            cin.ignore();
             cin.get();
             system("cls");
         }
@@ -519,8 +519,6 @@ int Register::CourseChoosing(int group)
             system("cls");
             return 0;
         }
-
-        // Print header with border
         setColor(COLOR_CYAN);
         cout << "+==================================================================================================+\n";
         cout << "|";

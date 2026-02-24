@@ -6,7 +6,7 @@
             "command": "bash",
             "args": [
                 "-c",
-                "/c/msys64/ucrt64/bin/g++.exe -std=c++17 claude.cpp -o claude.exe"
+                "/c/msys64/mingw64/bin/g++.EXE -std=c++17 \"${file}\" -o \"${workspaceFolder}/output/${fileBasenameNoExtension}.exe\""
             ],
             "options": {
                 "cwd": "${workspaceFolder}",

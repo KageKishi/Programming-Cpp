@@ -1,0 +1,26 @@
+[
+      {
+            "Author": "21",
+            "ISBN": 11211,
+            "Price": 2121.0,
+            "Title": "12121"
+      },
+      {
+            "Author": "Say Puthi",
+            "ISBN": 20000,
+            "Price": 0.99,
+            "Title": "Lol"
+      },
+      {
+            "Author": "Lol",
+            "ISBN": 121,
+            "Price": 0.99,
+            "Title": "Death"
+      },
+      {
+            "Author": "Say Puthi",
+            "ISBN": 80000,
+            "Price": 200.0,
+            "Title": "How to Gamble 101"
+      }
+]
