@@ -46,7 +46,7 @@ void LoadJson(json &arr)
 void SaveToJSON(const string &ID, const string &name, int semester, int year,
                 const map<string, int> &classes)
 {
-    if(StudentExist(ID)) //To update existing student data instead of creating new entry
+    if (StudentExist(ID)) // To update existing student data instead of creating new entry
     {
         json arr;
         json current;
@@ -70,7 +70,7 @@ void SaveToJSON(const string &ID, const string &name, int semester, int year,
         Write << arr.dump(6);
         Write.close();
     }
-    if (!StudentExist(ID)) //To add new student data 
+    if (!StudentExist(ID)) // To add new student data
     {
         json arr;
         json current;
