@@ -9,7 +9,7 @@ Triangle*/
 using namespace std;
 using json = nlohmann::json;
 int getValidatedInteger(const std::string &prompt);
-class shape
+class shape 
 {
 public:
     json arr;

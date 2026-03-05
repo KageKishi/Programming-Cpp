@@ -1,0 +1,15 @@
+[
+     {
+          "length": 10,
+          "type": "line"
+     },
+     {
+          "height": 10,
+          "type": "triangle"
+     },
+     {
+          "height": 5,
+          "type": "rectangle",
+          "width": 10
+     }
+]
