@@ -1077,7 +1077,7 @@ bool studentExistsInCSV(const string &ID)
         while (getline(file, line))
         {
             if (line.empty())
-                continue; // Skip empty lines
+                continue; 
             stringstream ss(line);
             string id;
             getline(ss, id, ',');
@@ -1103,7 +1103,7 @@ bool loadStudentFromCSV(const string &ID, string &names, int &semester, int &yea
         while (getline(file, line))
         {
             if (line.empty())
-                continue; // Skip empty lines
+                continue;
             stringstream ss(line);
             string id, n, sem, yr, prog, phys, math, writ;
             getline(ss, id, ',');
@@ -1165,7 +1165,7 @@ void viewAllStudentsFromCSV()
         while (getline(file, line))
         {
             if (line.empty())
-                continue; // Skip empty lines
+                continue;
             stringstream ss(line);
             string id, name, sem, yr, prog, phys, math, writ;
 
@@ -1268,7 +1268,7 @@ void recalculateGroupSlotsFromCSV(map<int, map<string, int>> &courseamt)
         while (getline(file, line))
         {
             if (line.empty())
-                continue; // Skip empty lines
+                continue; 
             stringstream ss(line);
             string id, name, sem, yr, prog, phys, math, writ;
 
@@ -1291,7 +1291,7 @@ void recalculateGroupSlotsFromCSV(map<int, map<string, int>> &courseamt)
             }
             catch (...)
             {
-                continue; // Skip invalid lines
+                continue; 
             }
 
             if (pg > 0 && pg <= 4)
