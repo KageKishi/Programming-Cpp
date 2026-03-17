@@ -33,8 +33,8 @@ int main()
     int ans;
     bool Registers;
     bool Login;
-
-    while (true)
+    bool running = true;
+    while(running)
     {
         system("cls");
         Registers = false;
@@ -92,6 +92,7 @@ int main()
             ID = getID();
             if (StudentExist(ID))
             {
+                running = false;
                 break;
             }
             else
@@ -152,19 +153,32 @@ int main()
             setColor(COLOR_GREEN);
             cout << "!\n";
             resetColor();
-            break;
+            Registers = false;
         }
-        if (StudentExist(ID) && Registers)
+        if (StudentExist(ID) && Login)
         {
-            continue;
+            running = false;
         }
-        if (StudentExist(ID))
+        if(!StudentExist(ID) && ans == 1)
         {
-            break;
-        }
-        if (Registers)
-        {
-            break;
+            system("cls");
+            setColor(COLOR_GREEN);
+            cout << "\n> Registration successful for ";
+            setColor(COLOR_CYAN);
+            cout << name;
+            setColor(COLOR_GREEN);
+            cout << " (ID: ";
+            setColor(COLOR_CYAN);
+            cout << ID;
+            setColor(COLOR_GREEN);
+            cout << ") for Trimester ";
+            setColor(COLOR_CYAN);
+            cout << semester << "F-" << year;
+            setColor(COLOR_GREEN);
+            cout << "!\n";
+            resetColor();
+            Sleep(3000);
+            running = false;
         }
     }
 
