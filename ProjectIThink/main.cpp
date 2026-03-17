@@ -34,6 +34,7 @@ int main()
     bool Registers;
     bool Login;
     bool running = true;
+    bool runningMenu = true;
     while(running)
     {
         system("cls");
@@ -179,6 +180,7 @@ int main()
             resetColor();
             Sleep(3000);
             running = false;
+            SaveToJSON(ID, name, semester, year, page.classes);
         }
     }
 
@@ -277,7 +279,7 @@ int main()
 
     LoadingMain();
 
-    while (true)
+    while (runningMenu)
     {
         system("cls");
         setColor(COLOR_CYAN);
@@ -357,7 +359,7 @@ int main()
             char leave = ExitProgram(page.classes, name, ID, year, semester);
             if (leave == 'Y')
             {
-                return 0;
+                runningMenu = false;
             }
             break;
         }

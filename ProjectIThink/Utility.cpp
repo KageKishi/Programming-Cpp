@@ -30,7 +30,8 @@ void SaveToJSON(const string &ID, const string &name, int semester, int year,
 int getValidatedInteger(const std::string &prompt)
 {
     std::string temp;
-    while (true)
+    bool invalid = true;
+    while (invalid)
     {
         setColor(COLOR_YELLOW);
         std::cout << prompt;
@@ -44,6 +45,7 @@ int getValidatedInteger(const std::string &prompt)
                 if (!isdigit(c))
                     throw std::invalid_argument("Invalid");
             }
+            invalid = false;
             return std::stoi(temp);
         }
         catch (...)
@@ -58,7 +60,8 @@ int getValidatedInteger(const std::string &prompt)
 string getname(const string &prompt)
 {
     string temp;
-    while (true)
+    bool invalid = true;
+    while (invalid)
     {
         bool SpaceSeen = false;
         bool valid = true;
@@ -84,7 +87,7 @@ string getname(const string &prompt)
             if (isdigit(c) || (!isalpha(c) && !isspace(c)) || (isspace(c) && SpaceSeen))
             {
                 setColor(COLOR_RED);
-                cout << "ERROR: Name can only be Alphabets and 1 space to seperate First and Last name!\n";
+                cout << "ERROR: Name can only have Alphabets and 1 space to seperate First and Last name!\n";
                 resetColor();
                 valid = false;
                 break;
@@ -189,8 +192,7 @@ void printDeveloperInfo()
     vector<int> colors = {9, 11, 10, 14, 13, 12, 15};
 
     int colorIndex = 0;
-
-    while (true)
+    while (colorIndex < 50) // Limit to 50 iterations for a reasonable duration
     {
         system("cls");
 
@@ -210,10 +212,6 @@ void printDeveloperInfo()
 
         colorIndex++;                                      // move to next color
         this_thread::sleep_for(chrono::milliseconds(500)); // slower color change
-        if (colorIndex >= 50)
-        {
-            break;
-        }
     }
 
     system("chcp 437 > nul");
@@ -222,7 +220,8 @@ void printDeveloperInfo()
 string getID()
 {
     string ID;
-    while (true)
+    bool invalid = true;
+    while (invalid)
     {
         setColor(COLOR_YELLOW);
         ID = to_string(getValidatedInteger("\nEnter your ID: "));
@@ -249,7 +248,8 @@ string getID()
 char ExitProgram(map<string, int> &classes, const string name, const string ID, const int year, const int semester)
 {
     char ans;
-    while (true)
+    bool invalid = true;
+    while (invalid)
     {
         setColor(COLOR_YELLOW);
         cout << "Your choice: ";
@@ -288,7 +288,8 @@ char ExitProgram(map<string, int> &classes, const string name, const string ID, 
 
 int getValidSemester()
 {
-    while (true)
+    bool  invalid = true;
+    while (invalid)
     {
         setColor(COLOR_YELLOW);
         int sem = getValidatedInteger("Enter Semester (1, 2, or 3): ");
@@ -303,7 +304,8 @@ int getValidSemester()
 
 int getValidYear()
 {
-    while (true)
+    bool invalid = true;
+    while (invalid)
     {
         setColor(COLOR_YELLOW);
         int yr = getValidatedInteger("\nEnter Year (e.g. 2024): ");
