@@ -1,14 +1,4 @@
-#include <iostream>
-#include <map>
-#include <vector>
-#include <iomanip>
-#include <fstream>
-#include <sstream>
-#include <windows.h>
-#include <chrono>
-#include <thread>
-#include <string>
-// This file provides console color helpers; do not include other .cpp files here.
+
 #ifndef COLOR_LIGHT_GRAY
 #define COLOR_LIGHT_GRAY 7
 #define COLOR_DARK_GRAY 8

@@ -8,25 +8,15 @@
 #include <chrono>
 #include <thread>
 #include <string>
-#include "Utility.cpp"
-#include "database.cpp"
-#include "Class.cpp"
+#include <stdexcept>
+#include <cctype>
+#include <conio.h>
 #include "json.hpp"
 #include "color.cpp"
+#include "database.cpp"
+#include "Utility.cpp"
+#include "Class.cpp"
 using namespace std;
-string getID();
-void ViewAllStudent();
-int getValidSemester();
-int getValidYear();
-char ExitProgram(const map<string, int> &classes, const string &name, const string &ID, int year, int semester);
-void printDeveloperInfo();
-void LoadingMain();
-string getname(const string &prompt);
-int getValidatedInteger(const std::string &prompt);
-bool StudentExist(const string &ID);
-void LoadJson(json &arr);
-bool LoadExistingStudent(const string &ID, string &names, int &semester, int &year,
-                         map<string, int> &classes);
 int main()
 {
     int choice;

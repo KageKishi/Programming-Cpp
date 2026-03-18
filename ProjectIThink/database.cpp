@@ -1,27 +1,5 @@
-#include <iostream>
-#include <map>
-#include <vector>
-#include <iomanip>
-#include <fstream>
-#include <sstream>
-#include <windows.h>
-#include <chrono>
-#include <thread>
-#include <string>
-#include "json.hpp"
+
 // Forward declarations and lightweight color defines to avoid including .cpp files
-void setColor(int color);
-void resetColor();
-#ifndef COLOR_LIGHT_GRAY
-#define COLOR_LIGHT_GRAY 7
-#define COLOR_DARK_GRAY 8
-#define COLOR_GREEN 10
-#define COLOR_CYAN 11
-#define COLOR_RED 12
-#define COLOR_MAGENTA 13
-#define COLOR_YELLOW 14
-#define COLOR_WHITE 15
-#endif
 using namespace std;
 using json = nlohmann::json;
 bool StudentExist(const string &ID);

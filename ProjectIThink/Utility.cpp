@@ -1,32 +1,5 @@
 
-#include <iostream>
-#include <string>
-#include <map>
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <windows.h>
-#include <sstream>
-#include <stdexcept>
-#include <cctype>
-#include <conio.h>
 using namespace std;
-// Forward declarations for symbols defined in other translation units
-void resetColor();
-void setColor(int color);
-void SaveToJSON(const string &ID, const string &name, int semester, int year,
-                const map<string, int> &classes);
-// Ensure color macros exist when not provided elsewhere
-#ifndef COLOR_LIGHT_GRAY
-#define COLOR_LIGHT_GRAY 7
-#define COLOR_DARK_GRAY 8
-#define COLOR_GREEN 10
-#define COLOR_CYAN 11
-#define COLOR_RED 12
-#define COLOR_MAGENTA 13
-#define COLOR_YELLOW 14
-#define COLOR_WHITE 15
-#endif
 int getValidatedInteger(const std::string &prompt)
 {
     std::string temp;

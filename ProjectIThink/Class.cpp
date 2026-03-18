@@ -1,42 +1,4 @@
-#include <iostream>
-#include <map>
-#include <vector>
-#include <iomanip>
-#include <fstream>
-#include <sstream>
-#include <windows.h>
-#include <chrono>
-#include <thread>
-#include <string>
-#include "json.hpp"
-// Forward declarations to avoid including .cpp files
-int getValidatedInteger(const std::string &prompt);
-std::string getname(const std::string &prompt);
-void Loading();
-void LoadingMain();
-void resetColor();
-void setColor(int color);
-void SaveToJSON(const std::string &ID, const std::string &name, int semester, int year,
-                const std::map<std::string, int> &classes);
-void RecalculateGroupSlots(std::map<int, std::map<std::string, int>> &courseamt);
-using json = nlohmann::json;
-using namespace std;
-// Ensure color macros exist when not provided by other translation units
-#ifndef COLOR_LIGHT_GRAY
-#define COLOR_LIGHT_GRAY 7
-#define COLOR_DARK_GRAY 8
-#define COLOR_GREEN 10
-#define COLOR_CYAN 11
-#define COLOR_RED 12
-#define COLOR_MAGENTA 13
-#define COLOR_YELLOW 14
-#define COLOR_WHITE 15
-#endif
 
-// JSON helper in database.cpp
-void LoadJson(json &arr);
-bool LoadExistingStudent(const string &ID, string &names, int &semester, int &year,
-                         map<string, int> &classes);
 class Register
 {
 public:
