@@ -9,7 +9,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <cctype>
-
+#include <conio.h>
 using namespace std;
 // Forward declarations for symbols defined in other translation units
 void resetColor();
@@ -30,8 +30,7 @@ void SaveToJSON(const string &ID, const string &name, int semester, int year,
 int getValidatedInteger(const std::string &prompt)
 {
     std::string temp;
-    bool invalid = true;
-    while (invalid)
+    while (true)
     {
         setColor(COLOR_YELLOW);
         std::cout << prompt;
@@ -45,7 +44,6 @@ int getValidatedInteger(const std::string &prompt)
                 if (!isdigit(c))
                     throw std::invalid_argument("Invalid");
             }
-            invalid = false;
             return std::stoi(temp);
         }
         catch (...)
@@ -60,8 +58,7 @@ int getValidatedInteger(const std::string &prompt)
 string getname(const string &prompt)
 {
     string temp;
-    bool invalid = true;
-    while (invalid)
+    while (true)
     {
         bool SpaceSeen = false;
         bool valid = true;
@@ -186,13 +183,12 @@ void printDeveloperInfo()
         "Huon Lina : FlowChart",
         "",
         "Thank you for using our program!",
-        string(70, '=')};
-
-    // Colors to cycle through (bright console colors)
+        string(70, '='),
+    };
     vector<int> colors = {9, 11, 10, 14, 13, 12, 15};
 
     int colorIndex = 0;
-    while (colorIndex < 50) // Limit to 50 iterations for a reasonable duration
+    while (true) 
     {
         system("cls");
 
@@ -210,18 +206,22 @@ void printDeveloperInfo()
             printCenteredLine(lines, colors[colorIndex % colors.size()]);
         }
 
-        colorIndex++;                                      // move to next color
-        this_thread::sleep_for(chrono::milliseconds(500)); // slower color change
+        colorIndex++;                                   
+        this_thread::sleep_for(chrono::milliseconds(500)); 
+        Sleep(500);
+        if (_kbhit())
+        {
+            _getch(); 
+            break;
+        } 
     }
-
     system("chcp 437 > nul");
 }
 
 string getID()
 {
     string ID;
-    bool invalid = true;
-    while (invalid)
+    while (true)
     {
         setColor(COLOR_YELLOW);
         ID = to_string(getValidatedInteger("\nEnter your ID: "));
@@ -248,8 +248,7 @@ string getID()
 char ExitProgram(map<string, int> &classes, const string name, const string ID, const int year, const int semester)
 {
     char ans;
-    bool invalid = true;
-    while (invalid)
+    while (true)
     {
         setColor(COLOR_YELLOW);
         cout << "Your choice: ";
@@ -288,8 +287,7 @@ char ExitProgram(map<string, int> &classes, const string name, const string ID, 
 
 int getValidSemester()
 {
-    bool  invalid = true;
-    while (invalid)
+    while (true)
     {
         setColor(COLOR_YELLOW);
         int sem = getValidatedInteger("Enter Semester (1, 2, or 3): ");
@@ -304,8 +302,7 @@ int getValidSemester()
 
 int getValidYear()
 {
-    bool invalid = true;
-    while (invalid)
+    while (true)
     {
         setColor(COLOR_YELLOW);
         int yr = getValidatedInteger("\nEnter Year (e.g. 2024): ");

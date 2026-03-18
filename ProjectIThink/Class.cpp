@@ -153,8 +153,7 @@ public:
     int CourseChoosing(int group)
     {
         system("cls");
-        bool runningcourse = true;
-        while (runningcourse)
+        while (true)
         {
             if (group == 0)
             {
@@ -571,8 +570,7 @@ public:
             resetColor();
 
             char choice;
-            bool validInput = false;
-            while (!validInput)
+            while (true)
             {
                 setColor(COLOR_YELLOW);
                 cout << "\nPrint record to file? (Y/N): ";

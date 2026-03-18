@@ -8,14 +8,17 @@
 #include <chrono>
 #include <thread>
 #include <string>
+#include "Utility.cpp"
 #include "database.cpp"
-#include "utility.cpp"
 #include "Class.cpp"
 #include "json.hpp"
 #include "color.cpp"
 using namespace std;
 string getID();
 void ViewAllStudent();
+int getValidSemester();
+int getValidYear();
+char ExitProgram(const map<string, int> &classes, const string &name, const string &ID, int year, int semester);
 void printDeveloperInfo();
 void LoadingMain();
 string getname(const string &prompt);
@@ -33,9 +36,7 @@ int main()
     int ans;
     bool Registers;
     bool Login;
-    bool running = true;
-    bool runningMenu = true;
-    while(running)
+    while (true)
     {
         system("cls");
         Registers = false;
@@ -93,7 +94,6 @@ int main()
             ID = getID();
             if (StudentExist(ID))
             {
-                running = false;
                 break;
             }
             else
@@ -154,13 +154,17 @@ int main()
             setColor(COLOR_GREEN);
             cout << "!\n";
             resetColor();
-            Registers = false;
+            break;
         }
         if (StudentExist(ID) && Login)
         {
-            running = false;
+            break;
         }
-        if(!StudentExist(ID) && ans == 1)
+        if (!StudentExist(ID) && Login)
+        {
+            continue;
+        }
+        if (!StudentExist(ID) && Registers)
         {
             system("cls");
             setColor(COLOR_GREEN);
@@ -179,8 +183,11 @@ int main()
             cout << "!\n";
             resetColor();
             Sleep(3000);
-            running = false;
-            SaveToJSON(ID, name, semester, year, page.classes);
+            break;
+        }
+        if (StudentExist(ID) && Registers)
+        {
+            continue;
         }
     }
 
@@ -278,8 +285,8 @@ int main()
     }
 
     LoadingMain();
-
-    while (runningMenu)
+    SaveToJSON(ID, name, semester, year, page.classes);
+    while (true)
     {
         system("cls");
         setColor(COLOR_CYAN);
@@ -306,6 +313,11 @@ int main()
         cout << "|  ";
         setColor(COLOR_GREEN);
         cout << left << setw(58) << "3 - View all students";
+        setColor(COLOR_CYAN);
+        cout << "|\n";
+        cout << "|  ";
+        setColor(COLOR_GREEN);
+        cout << left << setw(58) << "4 - Delete student record";
         setColor(COLOR_CYAN);
         cout << "|\n";
         cout << "|  ";
@@ -351,6 +363,47 @@ int main()
             LoadingMain();
             break;
         }
+        case 4:
+        {
+            string DeleteID;
+            ViewAllStudent();
+            while (DeleteID != "0")
+            {
+                setColor(COLOR_YELLOW);
+                cout << "Enter the ID of the student to delete or 0 to exit\n";
+                setColor(COLOR_CYAN);
+                getline(cin, DeleteID);
+                if (DeleteID == "0")
+                {
+                    system("cls");
+                    LoadingMain();
+                    break;
+                }
+                if (!StudentExist(DeleteID))
+                {
+                    setColor(COLOR_RED);
+                    cout << "ID not found! Please enter a valid ID or 0 to exit.\n";
+                    resetColor();
+                }
+                if (StudentExist(DeleteID) && DeleteID == ID)
+                {
+                    setColor(COLOR_RED);
+                    cout << "You cannot delete your own record while logged in!\n";
+                    resetColor();
+                    Sleep(2000);
+                }
+                else if (StudentExist(DeleteID))
+                {
+                    system("cls");
+                    DeleteStudent(DeleteID);
+                    ViewAllStudent();
+                }
+            }
+            system("cls");
+            setColor(COLOR_YELLOW);
+            LoadingMain();
+            break;
+        }
         case 0:
         {
             setColor(COLOR_YELLOW);
@@ -359,7 +412,7 @@ int main()
             char leave = ExitProgram(page.classes, name, ID, year, semester);
             if (leave == 'Y')
             {
-                runningMenu = false;
+                return 0;
             }
             break;
         }

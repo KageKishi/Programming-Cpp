@@ -256,6 +256,7 @@ void ViewAllStudent()
         setColor(COLOR_CYAN);
         cout << "|\n";
         cout << "+======================================================================+\n";
+        setColor(COLOR_YELLOW);
     }
     else
     {
@@ -263,4 +264,26 @@ void ViewAllStudent()
         cout << "X No student database found.\n";
         resetColor();
     }
+}
+void DeleteStudent(string ID)
+{
+    json arr;
+    json current;
+    arr = json::array();
+    LoadJson(arr);
+    for (auto it = arr.begin(); it != arr.end(); it++)
+    {
+        if ((*it)["ID"] == ID)
+        {
+            arr.erase(it);
+            setColor(COLOR_RED);
+            cout << "Student with ID " << ID << " has been deleted.\n";
+            Sleep(2000);
+            resetColor();
+            break;
+        }
+    }
+    ofstream Write("Register.json");
+    Write << arr.dump(6);
+    Write.close();
 }
