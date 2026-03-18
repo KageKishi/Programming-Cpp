@@ -157,12 +157,19 @@ void printDeveloperInfo()
         "",
         "Thank you for using our program!",
         string(70, '='),
+        "Press any key to exit...",
+        string(70, '='),
     };
     vector<int> colors = {9, 11, 10, 14, 13, 12, 15};
 
     int colorIndex = 0;
-    while (true) 
+    while (true)
     {
+        if (_kbhit())
+        {
+            _getch();
+            break;
+        }
         system("cls");
 
         // Print ASCII art
@@ -178,17 +185,11 @@ void printDeveloperInfo()
         {
             printCenteredLine(lines, colors[colorIndex % colors.size()]);
         }
-
-        colorIndex++;                                   
-        this_thread::sleep_for(chrono::milliseconds(500)); 
-        Sleep(500);
-        if (_kbhit())
-        {
-            _getch(); 
-            break;
-        } 
+        colorIndex++;
+        this_thread::sleep_for(chrono::milliseconds(1000));
     }
     system("chcp 437 > nul");
+    system("cls");
 }
 
 string getID()

@@ -391,7 +391,6 @@ int main()
             }
             system("cls");
             setColor(COLOR_YELLOW);
-            LoadingMain();
             break;
         }
         case 0:

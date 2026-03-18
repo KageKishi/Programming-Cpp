@@ -253,7 +253,7 @@ void DeleteStudent(string ID)
     {
         if ((*it)["ID"] == ID)
         {
-            arr.erase(it);
+            it = arr.erase(it);
             setColor(COLOR_RED);
             cout << "Student with ID " << ID << " has been deleted.\n";
             Sleep(2000);
