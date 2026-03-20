@@ -27,7 +27,6 @@ void SaveToJSON(const string &ID, const string &name, int semester, int year,
     if (StudentExist(ID)) // To update existing student data instead of creating new entry
     {
         json arr;
-        json current;
         arr = json::array();
         LoadJson(arr);
         for (auto &student : arr)
@@ -48,11 +47,11 @@ void SaveToJSON(const string &ID, const string &name, int semester, int year,
         Write << arr.dump(6);
         Write.close();
     }
-    if (!StudentExist(ID)) // To add new student data
+    else // To add new student data
     {
         json arr;
-        json current;
         arr = json::array();
+        json current;
         LoadJson(arr);
         current["ID"] = ID;
         current["name"] = name;
@@ -71,7 +70,6 @@ void SaveToJSON(const string &ID, const string &name, int semester, int year,
 void RecalculateGroupSlots(map<int, map<string, int>> &courseamt)
 {
     json arr;
-    json current;
     arr = json::array();
     LoadJson(arr);
     for (const auto &classes : arr)
@@ -97,7 +95,6 @@ void RecalculateGroupSlots(map<int, map<string, int>> &courseamt)
 bool StudentExist(const string &ID)
 {
     json arr;
-    json current;
     arr = json::array();
     LoadJson(arr);
     for (const auto &classes : arr)
@@ -113,7 +110,6 @@ bool LoadExistingStudent(const string &searchID, string &names, int &semester, i
                          map<string, int> &classes)
 {
     json arr;
-    json current;
     arr = json::array();
     LoadJson(arr);
     for (const auto &student : arr)
@@ -127,13 +123,8 @@ bool LoadExistingStudent(const string &searchID, string &names, int &semester, i
             classes["Physics 1"] = student.value("Physics 1", 0);
             classes["Mathematics 2"] = student.value("Mathematics 2", 0);
             classes["Writing and Research Skills"] = student.value("Writing and Research Skills", 0);
-            break;
-        }
-    }
-    for (const auto &student : arr)
-    {
-        if (student["ID"] == searchID)
             return true;
+        }
     }
     return false;
 }
@@ -141,11 +132,9 @@ void ViewAllStudent()
 {
     string id, name, sem, yr, prog, phys, math, writ;
     json arr;
-    json current;
     arr = json::array();
     LoadJson(arr);
-    ifstream file("Register.json");
-    if (file.is_open())
+    if (!arr.empty())
     {
         setColor(COLOR_CYAN);
         cout << "+======================================================================+\n";
@@ -157,10 +146,7 @@ void ViewAllStudent()
         setColor(COLOR_CYAN);
         cout << "|\n";
         cout << "+======================================================================+\n";
-        resetColor();
-
-        string line;
-        getline(file, line);
+        
         int count = 0;
         for (const auto &student : arr)
         {
@@ -223,7 +209,6 @@ void ViewAllStudent()
             }
             count++;
         }
-        file.close();
         cout << right;
         setColor(COLOR_CYAN);
         cout << "|" << setw(72) << "|\n";
@@ -240,13 +225,12 @@ void ViewAllStudent()
     {
         setColor(COLOR_RED);
         cout << "X No student database found.\n";
-        resetColor();
+        
     }
 }
 void DeleteStudent(string ID)
 {
     json arr;
-    json current;
     arr = json::array();
     LoadJson(arr);
     for (auto it = arr.begin(); it != arr.end(); it++)
@@ -257,7 +241,7 @@ void DeleteStudent(string ID)
             setColor(COLOR_RED);
             cout << "Student with ID " << ID << " has been deleted.\n";
             Sleep(2000);
-            resetColor();
+            
             break;
         }
     }

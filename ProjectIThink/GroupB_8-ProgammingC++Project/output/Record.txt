@@ -2,15 +2,14 @@
 |GROUPING RECORD                                             |
 +============================================================+
 |                                                            |
-|  Student: kk                                               |
-|  ID: 700099988                                             |
-|  Trimester: 3F-2025                                        |
+|  Student: eewfw                                            |
+|  ID: 700092134                                             |
+|  Trimester: 2F-2025                                        |
 |                                                            |
 +============================================================+
 |  Unit                               Group                  |
 +============================================================+
-|  Mathematics 2                      1E4                    |
-|  Physics 1                          1E4                    |
+|  Physics 1                          1E3                    |
 |  Programming                        1E4                    |
-|  Writing and Research Skills        1E4                    |
+|  Writing and Research Skills        1E1                    |
 +============================================================+

@@ -198,5 +198,75 @@
             "name": "kk",
             "semester": 3,
             "year": 2025
+      },
+      {
+            "ID": "700032133",
+            "Mathematics 2": 2,
+            "Physics 1": 2,
+            "Programming": 2,
+            "Writing and Research Skills": 2,
+            "name": "Lor Hengleap",
+            "semester": 2,
+            "year": 2025
+      },
+      {
+            "ID": "700031312",
+            "Mathematics 2": 0,
+            "Physics 1": 0,
+            "Programming": 0,
+            "Writing and Research Skills": 0,
+            "name": "KK KK",
+            "semester": 2,
+            "year": 2022
+      },
+      {
+            "ID": "700031314",
+            "Mathematics 2": 2,
+            "Physics 1": 2,
+            "Programming": 2,
+            "Writing and Research Skills": 2,
+            "name": "Lor Hengleap",
+            "semester": 2,
+            "year": 2022
+      },
+      {
+            "ID": "700099911",
+            "Mathematics 2": 4,
+            "Physics 1": 4,
+            "Programming": 4,
+            "Writing and Research Skills": 4,
+            "name": "Lor LLL",
+            "semester": 2,
+            "year": 2022
+      },
+      {
+            "ID": "700033221",
+            "Mathematics 2": 0,
+            "Physics 1": 0,
+            "Programming": 0,
+            "Writing and Research Skills": 0,
+            "name": "lll",
+            "semester": 2,
+            "year": 2022
+      },
+      {
+            "ID": "700099312",
+            "Mathematics 2": 0,
+            "Physics 1": 0,
+            "Programming": 0,
+            "Writing and Research Skills": 0,
+            "name": "Ka ka",
+            "semester": 2,
+            "year": 2025
+      },
+      {
+            "ID": "700092134",
+            "Mathematics 2": 0,
+            "Physics 1": 3,
+            "Programming": 4,
+            "Writing and Research Skills": 1,
+            "name": "eewfw",
+            "semester": 2,
+            "year": 2025
       }
 ]

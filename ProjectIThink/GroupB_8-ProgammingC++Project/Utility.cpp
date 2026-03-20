@@ -1,5 +1,4 @@
 
-using namespace std;
 int getValidatedInteger(const std::string &prompt)
 {
     std::string temp;
@@ -8,8 +7,15 @@ int getValidatedInteger(const std::string &prompt)
         setColor(COLOR_YELLOW);
         std::cout << prompt;
         setColor(COLOR_CYAN);
-        std::getline(std::cin >> ws, temp);
-        resetColor();
+        std::getline(std::cin, temp);
+        
+        if(temp.empty())
+        {
+            setColor(COLOR_RED);
+            std::cout << "Error: Input cannot be empty.\n";
+            
+            continue;
+        }
         try
         {
             for (char c : temp)
@@ -23,7 +29,7 @@ int getValidatedInteger(const std::string &prompt)
         {
             setColor(COLOR_RED);
             std::cout << "Error: Enter valid number.\n";
-            resetColor();
+            
         }
     }
 }
@@ -39,17 +45,18 @@ string getname(const string &prompt)
         cout << prompt;
         setColor(COLOR_CYAN);
         getline(cin, temp);
-        if (isspace(temp[0]))
-        {
-            cout << "Your name cant start with space\n";
-            continue;
-        }
-        resetColor();
+
         if (temp.empty())
         {
             setColor(COLOR_RED);
             cout << "ERROR: Name cannot be empty!\n";
-            resetColor();
+            
+            continue;
+        }
+        if (isspace(temp[0]))
+        {
+            cout << "Your name cant start with space\n";
+            
             continue;
         }
         for (char c : temp)
@@ -58,7 +65,7 @@ string getname(const string &prompt)
             {
                 setColor(COLOR_RED);
                 cout << "ERROR: Name can only have Alphabets and 1 space to seperate First and Last name!\n";
-                resetColor();
+                
                 valid = false;
                 break;
             }
@@ -69,7 +76,7 @@ string getname(const string &prompt)
         }
         if (valid)
         {
-            resetColor();
+            
             return temp;
         }
     }
@@ -84,7 +91,7 @@ void Loading()
         cout << " . ";
         Sleep(500);
     }
-    resetColor();
+    
     system("cls");
 }
 
@@ -97,7 +104,7 @@ void LoadingMain()
         cout << " . ";
         Sleep(500);
     }
-    resetColor();
+    
     system("cls");
 }
 
@@ -122,8 +129,6 @@ void printCenteredLine(const string &lines, int color)
 // Main function
 void printDeveloperInfo()
 {
-    system("chcp 65001 > nul");
-
     vector<string> asciiArt = {
         "+==================================================================================================+",
         "|                                                                                                  |",
@@ -188,8 +193,6 @@ void printDeveloperInfo()
         colorIndex++;
         this_thread::sleep_for(chrono::milliseconds(1000));
     }
-    system("chcp 437 > nul");
-    system("cls");
 }
 
 string getID()
@@ -199,19 +202,19 @@ string getID()
     {
         setColor(COLOR_YELLOW);
         ID = to_string(getValidatedInteger("\nEnter your ID: "));
-        resetColor();
+        
         if (ID.length() != 9)
         {
             setColor(COLOR_RED);
             cout << "ERROR: ID must be 9 digits!\n";
-            resetColor();
+            
             continue;
         }
         else if (ID.substr(0, 4) != "7000")
         {
             setColor(COLOR_RED);
             cout << "ERROR: ID must start with 7000!\n";
-            resetColor();
+            
             continue;
         }
         else
@@ -229,12 +232,13 @@ char ExitProgram(map<string, int> &classes, const string name, const string ID, 
         setColor(COLOR_CYAN);
         cin >> ans;
         ans = toupper(ans);
+        string trash;
+        getline(cin,trash);
         if (ans == 'Y')
         {
             SaveToJSON(ID, name, semester, year, classes);
             printDeveloperInfo();
             return 'Y';
-            break;
         }
         else if (ans == 'N')
         {
@@ -245,16 +249,14 @@ char ExitProgram(map<string, int> &classes, const string name, const string ID, 
                 Sleep(500);
                 cout << " . ";
             }
-            resetColor();
+            
             return 'N';
-            system("cls");
-            break;
         }
         else
         {
             setColor(COLOR_RED);
             cout << "Invalid! Enter Y or N: ";
-            resetColor();
+            
         }
     }
 }
@@ -265,12 +267,12 @@ int getValidSemester()
     {
         setColor(COLOR_YELLOW);
         int sem = getValidatedInteger("Enter Semester (1, 2, or 3): ");
-        resetColor();
+        
         if (sem >= 1 && sem <= 3)
             return sem;
         setColor(COLOR_RED);
         cout << "Invalid semester!\n";
-        resetColor();
+        
     }
 }
 
@@ -280,11 +282,11 @@ int getValidYear()
     {
         setColor(COLOR_YELLOW);
         int yr = getValidatedInteger("\nEnter Year (e.g. 2024): ");
-        resetColor();
+        
         if (yr <= 2030 && yr >= 2020)
             return yr;
         setColor(COLOR_RED);
         cout << "Invalid year!\n";
-        resetColor();
+        
     }
 }

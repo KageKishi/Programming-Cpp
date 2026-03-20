@@ -7,7 +7,6 @@ public:
         {"Physics 1", 0},
         {"Mathematics 2", 0},
         {"Writing and Research Skills", 0}};
-    bool canExit = false;
 
 private:
     map<int, map<string, int>> courseamt = {
@@ -22,10 +21,6 @@ private:
 public:
     Register()
     {
-        json current;
-        json arr;
-        arr = json::array();
-        LoadJson(arr);
         RecalculateGroupSlots(courseamt);
     }
 
@@ -41,78 +36,82 @@ public:
 
     int GroupRegistrationModule()
     {
-        setColor(COLOR_CYAN);
-        cout << "+============================================================+\n";
-        cout << "|";
-        setColor(COLOR_YELLOW);
-        cout << left;
-        cout << setw(60) << "GROUP REGISTRATION MODULE";
-        cout << right;
-        setColor(COLOR_CYAN);
-        cout << "|\n";
-        cout << "+============================================================+\n";
-        cout << "|" << setw(62) << "|\n";
-        cout << "|  ";
-        setColor(COLOR_GREEN);
-        cout << left << setw(58) << "1 - 1E1";
-        setColor(COLOR_CYAN);
-        cout << "|\n";
-        cout << "|  ";
-        setColor(COLOR_GREEN);
-        cout << left << setw(58) << "2 - 1E2";
-        setColor(COLOR_CYAN);
-        cout << "|\n";
-        cout << "|  ";
-        setColor(COLOR_GREEN);
-        cout << left << setw(58) << "3 - 1E3";
-        setColor(COLOR_CYAN);
-        cout << "|\n";
-        cout << "|  ";
-        setColor(COLOR_GREEN);
-        cout << left << setw(58) << "4 - 1E4";
-        setColor(COLOR_CYAN);
-        cout << "|\n";
-        cout << "|  ";
-        setColor(COLOR_RED);
-        cout << left << setw(58) << "0 - Exit";
-        setColor(COLOR_CYAN);
-        cout << "|\n";
-        cout << right;
-        cout << "|" << setw(62) << "|\n";
-        cout << "+============================================================+\n";
-        resetColor();
-
-        setColor(COLOR_YELLOW);
-        groupchoice = getValidatedInteger("\nGroup Selection: ");
-        resetColor();
-
-        if (groupchoice >= 1 && groupchoice <= 4)
+        bool validGroup = false;
+        while (!validGroup)
         {
-            setColor(COLOR_GREEN);
-            cout << "> You have chosen Group ";
             setColor(COLOR_CYAN);
-            cout << "1E" << groupchoice;
-            resetColor();
-            cout << "\n";
-        }
-        else if (groupchoice != 0)
-        {
-            system("cls");
+            cout << "+============================================================+\n";
+            cout << "|";
+            setColor(COLOR_YELLOW);
+            cout << left;
+            cout << setw(60) << "GROUP REGISTRATION MODULE";
+            cout << right;
+            setColor(COLOR_CYAN);
+            cout << "|\n";
+            cout << "+============================================================+\n";
+            cout << "|" << setw(62) << "|\n";
+            cout << "|  ";
+            setColor(COLOR_GREEN);
+            cout << left << setw(58) << "1 - 1E1";
+            setColor(COLOR_CYAN);
+            cout << "|\n";
+            cout << "|  ";
+            setColor(COLOR_GREEN);
+            cout << left << setw(58) << "2 - 1E2";
+            setColor(COLOR_CYAN);
+            cout << "|\n";
+            cout << "|  ";
+            setColor(COLOR_GREEN);
+            cout << left << setw(58) << "3 - 1E3";
+            setColor(COLOR_CYAN);
+            cout << "|\n";
+            cout << "|  ";
+            setColor(COLOR_GREEN);
+            cout << left << setw(58) << "4 - 1E4";
+            setColor(COLOR_CYAN);
+            cout << "|\n";
+            cout << "|  ";
             setColor(COLOR_RED);
-            cout << "X Invalid choice\n";
-            resetColor();
-            Sleep(1000);
-            return GroupRegistrationModule();
-        }
-        else
-        {
-            system("cls");
-            return 0;
+            cout << left << setw(58) << "0 - Exit";
+            setColor(COLOR_CYAN);
+            cout << "|\n";
+            cout << right;
+            cout << "|" << setw(62) << "|\n";
+            cout << "+============================================================+\n";
+            
+
+            setColor(COLOR_YELLOW);
+            groupchoice = getValidatedInteger("\nGroup Selection: ");
+            
+
+            if (groupchoice >= 1 && groupchoice <= 4)
+            {
+                setColor(COLOR_GREEN);
+                cout << "> You have chosen Group ";
+                setColor(COLOR_CYAN);
+                cout << "1E" << groupchoice;
+                
+                cout << "\n";
+                validGroup = true;
+            }
+            else if (groupchoice != 0)
+            {
+                system("cls");
+                setColor(COLOR_RED);
+                cout << "X Invalid choice\n";
+                
+                Sleep(1000);
+            }
+            else
+            {
+                system("cls");
+                return 0;
+            }
         }
         return groupchoice;
     }
 
-    int CourseChoosing(int group)
+    int CourseChoosing(const int &group, string &ID, string &name, int &semester, int &year)
     {
         system("cls");
         while (true)
@@ -303,11 +302,11 @@ public:
             cout << "|\n";
             cout << "+==================================================================================================+\n";
             cout << right;
-            resetColor();
+            
 
             setColor(COLOR_YELLOW);
             course = getValidatedInteger("Choice: ");
-            resetColor();
+            
 
             string selectedClass;
             if (course == 0)
@@ -339,7 +338,6 @@ public:
                 {
                     if (cls.second != 0)
                     {
-                        system("cls");
                         canRegAll = false;
                         reasons.push_back("Already registered for " + cls.first + " in 1E" + to_string(cls.second));
                     }
@@ -350,7 +348,6 @@ public:
                     if (courseamt[group][cls.first] == 0)
                     {
                         canRegAll = false;
-                        system("cls");
                         reasons.push_back("No slots for " + cls.first + " in 1E" + to_string(group));
                     }
                 }
@@ -358,19 +355,19 @@ public:
                 if (canRegAll)
                 {
                     for (auto &cll : classes)
-                    {
-                        classes[cll.first] = group;
                         courseamt[group][cll.first]--;
-                    }
+                    for (auto &cll : classes)
+                        cll.second = group;
                     registered = true;
                     system("cls");
                     setColor(COLOR_GREEN);
                     cout << "> Successfully registered ALL units in ";
+                    SaveToJSON(ID, name, semester, year, classes);
                     setColor(COLOR_CYAN);
                     cout << "1E" << group;
                     setColor(COLOR_GREEN);
                     cout << "!\n";
-                    resetColor();
+                    
                     Loading();
                 }
                 else
@@ -378,12 +375,12 @@ public:
                     system("cls");
                     setColor(COLOR_RED);
                     cout << "X Cannot register all units:\n";
-                    resetColor();
+                    
                     for (const auto &r : reasons)
                     {
                         setColor(COLOR_YELLOW);
                         cout << "  - " << r << "\n";
-                        resetColor();
+                        
                     }
                     Sleep(2000);
                 }
@@ -393,7 +390,7 @@ public:
                 system("cls");
                 setColor(COLOR_RED);
                 cout << "X Invalid choice\n";
-                resetColor();
+                
                 Sleep(1000);
             }
 
@@ -420,10 +417,10 @@ public:
                         cout << " in ";
                         setColor(COLOR_CYAN);
                         cout << "1E" << classes[selectedClass];
-                        resetColor();
+                        
                         cout << "\n";
                     }
-                    resetColor();
+                    
                     Sleep(1500);
                 }
                 else if (classes[selectedClass] != 0 && course >= 1 && course <= 4)
@@ -437,7 +434,7 @@ public:
                     cout << " in ";
                     setColor(COLOR_CYAN);
                     cout << "1E" << classes[selectedClass];
-                    resetColor();
+                    
                     cout << "\n";
                     Sleep(2000);
                 }
@@ -446,6 +443,7 @@ public:
                     system("cls");
                     courseamt[group][selectedClass]--;
                     classes[selectedClass] = group;
+                    SaveToJSON(ID, name, semester, year, classes);
                     setColor(COLOR_GREEN);
                     cout << "> You have successfully registered ";
                     setColor(COLOR_CYAN);
@@ -456,7 +454,7 @@ public:
                     cout << selectedClass;
                     setColor(COLOR_GREEN);
                     cout << "!\n";
-                    resetColor();
+                    
                     registered = true;
                     Loading();
                     return 1;
@@ -529,7 +527,7 @@ public:
             }
             setColor(COLOR_CYAN);
             cout << "+============================================================+\n";
-            resetColor();
+            
 
             char choice;
             while (true)
@@ -585,7 +583,7 @@ public:
                         }
                     }
                     file << "+============================================================+\n";
-                    resetColor();
+                    
 
                     file.close();
                     system("start Record.txt");
@@ -603,7 +601,7 @@ public:
                 {
                     setColor(COLOR_RED);
                     cout << "X Invalid input! Please enter Y or N.\n";
-                    resetColor();
+                    
                 }
             }
         }
@@ -612,7 +610,7 @@ public:
             system("cls");
             setColor(COLOR_RED);
             cout << "X You have not registered yet!\n";
-            resetColor();
+            
             Sleep(1500);
             return 0;
         }

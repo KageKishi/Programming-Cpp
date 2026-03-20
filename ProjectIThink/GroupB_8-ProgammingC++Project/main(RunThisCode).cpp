@@ -107,7 +107,7 @@ int main()
                 setColor(COLOR_RED);
                 cout << " This ID is already registered\n";
                 Sleep(1500);
-                resetColor();
+                setColor(COLOR_YELLOW);
                 system("pause");
                 break;
             }
@@ -136,11 +136,6 @@ int main()
             system("cls");
             semester = getValidSemester();
             year = getValidYear();
-
-            setColor(COLOR_GREEN);
-            cout << "\n> Registering for Trimester ";
-            setColor(COLOR_CYAN);
-            cout << semester << "F-" << year;
             setColor(COLOR_GREEN);
             cout << "!\n";
             resetColor();
@@ -173,6 +168,7 @@ int main()
             cout << "!\n";
             resetColor();
             Sleep(3000);
+
             break;
         }
         if (StudentExist(ID) && Registers)
@@ -266,18 +262,16 @@ int main()
             resetColor();
 
             setColor(COLOR_YELLOW);
-            cout << "\nPress Enter to continue... ";
-            resetColor();
-            cin.ignore();
-            cin.get();
+            system("pause");
             system("cls");
         }
     }
 
     LoadingMain();
-    SaveToJSON(ID, name, semester, year, page.classes);
+
     while (true)
     {
+        SaveToJSON(ID, name, semester, year, page.classes);
         system("cls");
         setColor(COLOR_CYAN);
         cout << "+============================================================+\n";
@@ -332,7 +326,7 @@ int main()
             while (choice != 0)
             {
                 choice = page.GroupRegistrationModule();
-                choice = page.CourseChoosing(choice);
+                choice = page.CourseChoosing(choice, ID, name, semester, year);
             }
             break;
         }
